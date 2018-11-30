@@ -1,0 +1,17 @@
+{
+	"database" : [
+		{
+			"drive" : "postgresql",
+			"nodes" : [
+				{
+					"active"   : true,
+					"host" 	   : "bin_banwire_service_gs_ivr_postgres",
+					"port" 	   : 5432,
+					"db" 	   : "banwire",
+					"user" 	   : "banwire",
+					"password" : "banwire"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,61 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "/KJN0e01b9V9zz76kENiquuRx2Y=",
+			"path": "github.com/codegangsta/negroni",
+			"revision": "2464562bff2596d11d053b4516aebea326574ccd",
+			"revisionTime": "2018-10-19T19:14:00Z"
+		},
+		{
+			"checksumSHA1": "FtCtcD/Ys18frKJyeZLzkPY6J8g=",
+			"path": "github.com/gorilla/mux",
+			"revision": "deb579d6e030503f430978ee229008b9bc912d40",
+			"revisionTime": "2018-10-12T15:31:51Z"
+		},
+		{
+			"checksumSHA1": "FHpNxGUqXNu02lBFaei16tXFhU0=",
+			"path": "github.com/jackc/pgx",
+			"revision": "20eaa7963b9d714bfaf678dcb2448fbd1e3671b9",
+			"revisionTime": "2018-10-10T12:56:47Z"
+		},
+		{
+			"checksumSHA1": "rsDmBQ/jGFUN2t6G4c3ohkKGKdQ=",
+			"path": "github.com/jackc/pgx/chunkreader",
+			"revision": "20eaa7963b9d714bfaf678dcb2448fbd1e3671b9",
+			"revisionTime": "2018-10-10T12:56:47Z"
+		},
+		{
+			"checksumSHA1": "wArf/u0cmHsLafG2tOcjVUUXQBw=",
+			"path": "github.com/jackc/pgx/internal/sanitize",
+			"revision": "20eaa7963b9d714bfaf678dcb2448fbd1e3671b9",
+			"revisionTime": "2018-10-10T12:56:47Z"
+		},
+		{
+			"checksumSHA1": "OCtOmvS8BLHQAyQXJ/Ub8QxKz0s=",
+			"path": "github.com/jackc/pgx/pgio",
+			"revision": "20eaa7963b9d714bfaf678dcb2448fbd1e3671b9",
+			"revisionTime": "2018-10-10T12:56:47Z"
+		},
+		{
+			"checksumSHA1": "O2maVT2McrV62SKrIXqZh7gHEoM=",
+			"path": "github.com/jackc/pgx/pgproto3",
+			"revision": "20eaa7963b9d714bfaf678dcb2448fbd1e3671b9",
+			"revisionTime": "2018-10-10T12:56:47Z"
+		},
+		{
+			"checksumSHA1": "fFUF5XbI8Gx63ZQPn8gFmRnK+is=",
+			"path": "github.com/jackc/pgx/pgtype",
+			"revision": "20eaa7963b9d714bfaf678dcb2448fbd1e3671b9",
+			"revisionTime": "2018-10-10T12:56:47Z"
+		},
+		{
+			"checksumSHA1": "DTy0iJ2w5C+FDsN9EnzfhNmvS+o=",
+			"path": "github.com/pkg/errors",
+			"revision": "2233dee583dcf88f3c8b22cb7a33f05a499800d8",
+			"revisionTime": "2018-10-08T04:53:15Z"
+		}
+	],
+	"rootPath": "banwire/services/gs_ivr_tokenization"
+}
