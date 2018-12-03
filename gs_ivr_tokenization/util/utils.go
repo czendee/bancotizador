@@ -1,6 +1,7 @@
 package  util
 import (
 	"log"
+	 "regexp"
 )
 
 
@@ -96,12 +97,75 @@ import (
 	}
 	
 
+
 func GetCardType(number string) string {
-	return "VISA"
+//	return "VISA" 
+//example    re := regexp.MustCompile(`^(?:4[0-9]{12}(?:[0-9]{3})?|[25][1-7][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$`)
+ 
+var resultado string
+
+resultado ="NONE"
+
+    visa := regexp.MustCompile("^4")
+    if visa.MatchString(number) {
+    	resultado = "VISA"
+    	
+    }
+    
+    master := regexp.MustCompile("^(5[1-5][0-9]{14}|2(22[1-9][0-9]{12}|2[3-9][0-9]{13}|[3-6][0-9]{14}|7[0-1][0-9]{13}|720[0-9]{12}))")
+   if master.MatchString(number) {
+    	resultado = "MASTER"
+    	
+    }
+
+    amex := regexp.MustCompile("^3[47]")
+   if (amex.MatchString(number)){
+    	resultado = "AMEX"
+    	
+    }    
+
+
+    diners := regexp.MustCompile("^36")
+   if (diners.MatchString(number)){
+    	resultado = "DINERS"
+    	
+    }    
+
+
+    jbc := regexp.MustCompile("^35(2[89]|[3-8][0-9])")
+   if (jbc.MatchString(number)){
+    	resultado = "JBC"
+    	
+    }    
+
+    visaelectron := regexp.MustCompile("^(4026|417500|4508|4844|491(3|7))")
+   if (visaelectron.MatchString(number)){
+    	resultado = "VISAELECTRON"
+    	
+    }    
+
+    discover := regexp.MustCompile("^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)")
+   if (discover.MatchString(number)){
+    	resultado = "DISCOVER"
+    	
+    }    
+
+    dinerscarte := regexp.MustCompile("^30[0-5]")
+   if (dinerscarte.MatchString(number)){
+    	resultado = "DINERS - Carte Blanche"
+    	
+    }    
+	 log.Print("CZ  ends func logicTypeCard:"+resultado)
+     return resultado
+
+}
+
 /*
  * 
 
 // visa
+
+var visa bool
 var re = new RegExp("^4");
  if (number.match(re) != null)
      return "Visa"; 
@@ -138,4 +202,4 @@ var re = new RegExp("^4");
     return "Visa Electron";
     return ""; 
  */
-}
+

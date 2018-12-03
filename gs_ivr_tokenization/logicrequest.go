@@ -161,12 +161,19 @@ import (
             var resultado string
             
             	if parRequestData.Clientreference != "" {
-
+	            	if len(parRequestData.Clientreference)>100 {
+	
+						resultado="Client reference is required"
+			        }
 				}else{
 					resultado="Client reference is required"
 		        }
 
 				if parRequestData.Paymentreference != "" {
+					if len(parRequestData.Paymentreference) >100 {
+	
+						resultado="Payment reference max lenght is 100"
+			        }
 
 				}else{
 					resultado="Payment reference is required"
@@ -179,6 +186,11 @@ import (
 		        }
 
 				if parRequestData.Cvv != "" {
+					if len(parRequestData.Cvv)==3 ||  len(parRequestData.Cvv)==4 {
+	
+					}else{
+						resultado="Cvv must be 3 or 4 digits"
+			        }
 
 				}else{
 					resultado="Cvv is required"
@@ -188,6 +200,12 @@ import (
 				}else{
 					resultado="Amount is required"
 		        }
+            //lenght
+
+
+
+
+		        
 			/// END
 
             return resultado
@@ -199,30 +217,48 @@ import (
             var resultado string
             
             	if parRequestData.Clientreference != "" {
-
+					if len(parRequestData.Paymentreference) >100 {
+	
+						resultado="Customer reference max lenght is 100"
+			        }
 				}else{
 					resultado="Client reference is required"
 		        }
 
 				if parRequestData.Paymentreference != "" {
-
+					if len(parRequestData.Paymentreference) >100 {
+	
+						resultado="Payment reference max lenght is 100"
+			        }
 				}else{
 					resultado="Payment reference is required"
 		        }
 
 				if parRequestData.Card != "" {
-
+					if len(parRequestData.Card)==16 || len(parRequestData.Card)==15{
+	
+					}else{
+						resultado="Card Number must be 16 digits"
+			        }
 				}else{
 					resultado="Card is required"
 		        }
 
 				if parRequestData.Exp != "" {
-
+					if  len(parRequestData.Exp)==4 {
+	
+					}else{
+						resultado="Valid Thru  4 digits"
+			        }
 				}else{
 					resultado="Valid Thru is required"
 		        }
 				if parRequestData.Cvv != "" {
-
+					if len(parRequestData.Cvv)==3 ||  len(parRequestData.Cvv)==4 {
+	
+					}else{
+						resultado="Cvv must be 3 or 4 digits"
+			        }
 				}else{
 					resultado="Cvv is required"
 		        }
