@@ -51,11 +51,23 @@
 			"revisionTime": "2018-10-10T12:56:47Z"
 		},
 		{
+			"checksumSHA1": "xxLSo5tKtXc7jGrR70yoEfza8Cw=",
+			"path": "github.com/lib/pq",
+			"revision": "9eb73efc1fcc404148b56765b0d3f61d9a5ef8ee",
+			"revisionTime": "2018-10-16T16:26:27Z"
+		},
+		{
+			"checksumSHA1": "AU3fA8Sm33Vj9PBoRPSeYfxLRuE=",
+			"path": "github.com/lib/pq/oid",
+			"revision": "9eb73efc1fcc404148b56765b0d3f61d9a5ef8ee",
+			"revisionTime": "2018-10-16T16:26:27Z"
+		},
+		{
 			"checksumSHA1": "DTy0iJ2w5C+FDsN9EnzfhNmvS+o=",
 			"path": "github.com/pkg/errors",
 			"revision": "2233dee583dcf88f3c8b22cb7a33f05a499800d8",
 			"revisionTime": "2018-10-08T04:53:15Z"
 		}
 	],
-	"rootPath": "banwire/services/gs_ivr_tokenization"
+	"rootPath": "banwire/services/gs_ivr/gs_ivr_tokenization"
 }
