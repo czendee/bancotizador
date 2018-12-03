@@ -9,7 +9,6 @@ import (
 	 
 )
 
-///////////////7//get
 
 
    func obtainParmsGettokenizedcards(r *http.Request, errorGeneral string )(modelito.RequestTokenizedCards, string){
