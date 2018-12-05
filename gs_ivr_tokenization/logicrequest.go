@@ -9,6 +9,7 @@ import (
 	 
 )
 
+///////////////7//get
 
 
    func obtainParmsGettokenizedcards(r *http.Request, errorGeneral string )(modelito.RequestTokenizedCards, string){
@@ -252,7 +253,7 @@ import (
 				}else{
 					resultado="Valid Thru is required"
 		        }
-				if parRequestData.Cvv != "" {
+/*				if parRequestData.Cvv != "" {
 					if len(parRequestData.Cvv)==3 ||  len(parRequestData.Cvv)==4 {
 	
 					}else{
@@ -261,6 +262,7 @@ import (
 				}else{
 					resultado="Cvv is required"
 		        }
+*/
 			/// END
 
             return resultado

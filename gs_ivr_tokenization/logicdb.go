@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"strings"
 //	"banwire/services/gs_ivr_tokenization/db"
 	modelito "banwire/services/gs_ivr_tokenization/model"
 	 "database/sql"
@@ -20,11 +21,10 @@ import (
     )
  
 
+///////////////// ///////////////////////////////////////version 3
 
-///////////////// ///////////////////////////////////////version 2
 
-
-///////////////// ///////////////////////////////////////version 2
+///////////////// ///////////////////////////////////////version 3
 
 
    func logicDBGettokenizedcardsV2(requestData modelito.RequestTokenizedCards, errorGeneral string) ([]modelito.Card,string) {
@@ -195,35 +195,78 @@ var errCards error
 								  errorGeneral =errCustomer.Error()
 	                               
 								} else{
-							             log.Print("Listo para insertar card!\n")
-								         milast,errLast :=miu.ObtainLast4fromCard (requestData.Card) //utils.go
-								         mibin,errBin :=miu.ObtainBINfromCard (requestData.Card) //utils.go
-										if(errLast!=""){
-											errorGeneral =errLast
-							                log.Print("error obatining the last 4!\n")
-										}else if(errBin!=""){
-											errorGeneral =errBin
-							                log.Print("error obatining the BIN!\n")
-										}else{
-							                log.Print(" todo ok para insertar!\n")
-									         miCard.ID ="888"   //current value +1  o un random
-							                log.Print(" todo ok para insertar, el parametro de token es !\n"+dataObtained.Token +"   : "+dataObtained.Type)
-									         miCard.Token =dataObtained.Token// value returned by the internal webservice 
-									         miCard.Last =milast//ulitmos 4 digitos de card
-									         miCard.Bin =mibin //6 basic digits in a card
-									         miCard.Valid =requestData.Exp  //4 digits passed as params
-									         miCard.Score ="0"
-									         miCard.Customer =miCustomer.ID	
-									         miCard.Brand = miu.GetCardType(requestData.Card)
-									         miCard.Type = dataObtained.Type
-									         errUpdate:=miCard.CreateCard(db)
-									          log.Print("regresa func  updateCard ok!\n")
-											if errUpdate != nil {
-											  log.Print("Error: :"+ errUpdate.Error())
-												errorGeneral =errUpdate.Error()
-											}
-											
-										}//end else dataos ok para  card
+						         log.Print("Ping ok!\n")
+                                    //verifica si ya existe ese tiken con algun otro cliente
+                                    //START
+//	                                 var miCard modelito.Card//to return the bin, last, brand, type_card GetCardByToken
+							          log.Print(" verificar si ya existe ese token en tabla cards 01!\n")
+							         miCard.Token = dataObtained.Token //from the webservice cr.banwire.com method ADD
+							         errCard:= miCard.GetCardByToken(db)
+						          	log.Print(" verificar si ya existe ese token en tabla cards 02!\n")
+									if errCard != nil {
+										 if strings.Contains(errCard.Error(),"no rows in result set") {
+                                          //no existe, entocnes procede a insertarlo
+                                               log.Print(" TOKEN doesnot exist for a customer"+errCard.Error())
+											  //no existe ese token para algun customer reference, proceder a insertar en cards table
+											  //START
+									             log.Print("Listo para insertar card!\n")
+										         milast,errLast :=miu.ObtainLast4fromCard (requestData.Card) //utils.go
+										         mibin,errBin :=miu.ObtainBINfromCard (requestData.Card) //utils.go
+												if(errLast!=""){
+													errorGeneral =errLast
+									                log.Print("error obatining the last 4!\n")
+												}else if(errBin!=""){
+													errorGeneral =errBin
+									                log.Print("error obatining the BIN!\n")
+												}else{
+									                log.Print(" todo ok para insertar!\n")
+											         miCard.ID ="888"   //current value +1  o un random
+									                log.Print(" todo ok para insertar, el parametro de token es !\n"+dataObtained.Token +"   : "+dataObtained.Type)
+											         miCard.Token =dataObtained.Token// value returned by the internal webservice 
+											         miCard.Last =milast//ulitmos 4 digitos de card
+											         miCard.Bin =mibin //6 basic digits in a card
+											         miCard.Valid =requestData.Exp  //4 digits passed as params
+											         miCard.Score ="0"
+											         miCard.Customer =miCustomer.ID	
+											         miCard.Brand = miu.GetCardType(requestData.Card)
+											         miCard.Type = dataObtained.Type
+											         errUpdate:=miCard.CreateCard(db)
+											          log.Print("regresa func  updateCard ok!\n")
+													if errUpdate != nil {
+													  log.Print("Error: :"+ errUpdate.Error())
+														errorGeneral =errUpdate.Error()
+													}
+													
+												}//end else dataos ok para  card
+		                                       //END                                          
+                                          //end if strings.contains 
+										 }else{
+										 	//error de la DB
+											  log.Print("Error: Checking token-customer:"+errCard.Error() )
+											  errorGeneral ="Error: Checking token-customer:"+errCard.Error() 
+										 }
+										 
+									} else{
+										
+										log.Print(" ya existe table card  token:!\n"+miCard.Token)
+										log.Print(" ya existe table card  bin:!\n"+miCard.Bin)
+										log.Print(" ya existe table card customer:!\n"+miCard.Customer)
+/*									         miCard.Token 
+									         miCard.Last 
+									         miCard.Bin 
+									         miCard.Valid 
+									         miCard.Score 
+									         miCard.Customer
+									         miCard.Brand 
+									         miCard.Type 
+*/									         
+									  log.Print("Error: TOKEN already exists for a customer:")
+									  errorGeneral ="Error: TOKEN already exists for a customer:"
+
+								    }
+	
+                                    //END
+                                    
 
 
 								
@@ -240,3 +283,5 @@ var errCards error
 
    	  return  miCard, errorGeneral
    }
+
+

@@ -90,7 +90,8 @@ import (
 			"number": {requestData.Card},  //
 			"exp_month": {month},              //requestData.Exp  solo mes
 			"exp_year": {year},             //requestData.Exp  solo año u de 4 digitos
-			"cvv": {requestData.Cvv},                   //iissue necesita el cvv
+//05Dec2018	"cvv": {requestData.Cvv},                   //iissue necesita el cvv
+			"cvv": {"000"},                   //Charly V indicated to send 000
 			"name": {"generalseguros"}, 
 			"address": {"generalseguros"},
 			"postal_code": {"06000"},
