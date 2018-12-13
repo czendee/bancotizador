@@ -18,12 +18,17 @@ type Card struct {
     Brand   string    `sql:"type:varchar(30)`
     Type   string    `sql:"type:varchar(30)`
 }
+/////////////////////////////version 3.2
 func (u *Card) getCard(db *sql.DB) error {
     statement := fmt.Sprintf("SELECT token, last FROM card WHERE id=%d", u.ID)
     return db.QueryRow(statement).Scan(&u.Token, &u.Last)
 }
 func (u *Card) GetCardByToken(db *sql.DB) error {
     statement := fmt.Sprintf("SELECT token,last_digits,bin, brand, type_card  reference FROM banwirecard WHERE token='%s'", u.Token)
+    return db.QueryRow(statement).Scan(&u.Token, &u.Last,&u.Bin,&u.Brand,&u.Type)
+}
+func (u *Card) GetCardByTokenAndCust(db *sql.DB,customer_id string) error {
+    statement := fmt.Sprintf("SELECT token,last_digits,bin, brand, type_card  reference FROM banwirecard WHERE token='%s' and id_customer='%s' ", u.Token,customer_id)
     return db.QueryRow(statement).Scan(&u.Token, &u.Last,&u.Bin,&u.Brand,&u.Type)
 }
 /*
@@ -43,6 +48,14 @@ func (u *Card) UpdateCard(db *sql.DB) error {
     _, err := db.Exec(statement)
     return err
 }
+
+func (u *Card) IncreaseScoreCardAndCust(db *sql.DB,customer_id string) error {
+//    statement := fmt.Sprintf("UPDATE card SET score='%s', last_update_at= current_timestamp WHERE token='%s'", u.Score,  u.Token)
+    statement := fmt.Sprintf("UPDATE banwirecard SET score=score +1, last_update_at= current_timestamp WHERE token='%s' and id_customer='%s' ", u.Token,customer_id)
+    _, err := db.Exec(statement)
+    return err
+}
+
 func (u *Card) IncreaseScoreCard(db *sql.DB) error {
 //    statement := fmt.Sprintf("UPDATE card SET score='%s', last_update_at= current_timestamp WHERE token='%s'", u.Score,  u.Token)
     statement := fmt.Sprintf("UPDATE banwirecard SET score=score +1, last_update_at= current_timestamp WHERE token='%s'",  u.Token)

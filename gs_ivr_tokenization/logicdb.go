@@ -21,11 +21,11 @@ import (
     )
  
 
-///////////////// ///////////////////////////////////////version 3
+///////////////// ///////////////////////////////////////version 3.2
 
 
-///////////////// ///////////////////////////////////////version 3
-
+///////////////// ///////////////////////////////////////version 3.2
+///////////////// ///////////////////////////////////////version 3.2
 
    func logicDBGettokenizedcardsV2(requestData modelito.RequestTokenizedCards, errorGeneral string) ([]modelito.Card,string) {
 	////////////////////////////////////////////////obtain parms in JSON
@@ -120,29 +120,44 @@ var errCards error
 					  errorGeneral =errPing.Error()
 					}else{
 				         log.Print("Ping ok!\n")
+				         var miCustomer modelito.Customer
+				         miCustomer.Reference = requestData.Clientreference 
+				         errCustomer:= miCustomer.GetCustomerByReference01(db)
+				         //in miCustomer.ID is the value of the id_customer 
+						if errCustomer != nil {
+							//the customer does not exist to score this payment
+							
+						  log.Print("Error: Customer does not Exists, payment done, buit score not updated: "+ errCustomer.Error())
+						  errorGeneral ="Error: Customer does not Exists. Payment applied, but card score not increased: "+ errCustomer.Error()
+                           
+						} else{
+							//the customer exists
+					         log.Print("the customer exists, ID interno es "+miCustomer.ID)
+					         miCard.Token =requestData.Token
+					         errUpdate:=miCard.IncreaseScoreCardAndCust(db,miCustomer.ID )
+					         log.Print("regresa func  IncreaseScoreCard ok!\n")
+							 if errUpdate != nil {
+								  log.Print("Error: increasing the score for this card:"+ errUpdate.Error())
+							      errorGeneral =errUpdate.Error()
+ 							 }else{
+						          log.Print(" se ejecuta  select table card to get bin, last, brand. type  01!\n")
+							         miCard.Token = requestData.Token
+							         errCard:= miCard.GetCardByToken(db)
+					          	log.Print(" se ejecuta select table card to get bin, last, brand. type  02!\n")
+									if errCard != nil {
+									  log.Print("Error: after payment was applied and score increased,There was a problem getting the customer:"+ errCard.Error())
+									  errorGeneral ="Error: after payment was applied and score increased,There was a problem getting the customer:"+ errCard.Error()
+		                               
+									} else{
+										log.Print(" select table card to get token:!\n"+miCard.Token)
+										log.Print(" select table card to get bin:!\n"+miCard.Bin)
+										log.Print(" select table card to get last:!\n"+miCard.Last)
+								    }
+	
+							 }//end else de increase
 
-				         miCard.Token =requestData.Token
-				         errUpdate:=miCard.IncreaseScoreCard(db)
-				          log.Print("regresa func  IncreaseScoreCard ok!\n")
-						if errUpdate != nil {
-						  log.Print("Error: :"+ errUpdate.Error())
-					      errorGeneral =errUpdate.Error()
-						}else{
-					          log.Print(" se ejecuta  select table card to get bin, last, brand. type  01!\n")
-						         miCard.Token = requestData.Token
-						         errCard:= miCard.GetCardByToken(db)
-				          	log.Print(" se ejecuta select table card to get bin, last, brand. type  02!\n")
-								if errCard != nil {
-								  log.Print("Error: get customer:"+ errCard.Error())
-								  errorGeneral =errCard.Error()
-	                               
-								} else{
-									log.Print(" select table card to get token:!\n"+miCard.Token)
-									log.Print(" select table card to get bin:!\n"+miCard.Bin)
-									log.Print(" select table card to get last:!\n"+miCard.Last)
-							    }
+                        }//end else de customer does exists
 
-						}
 			
 				    }
 			
@@ -201,14 +216,18 @@ var errCards error
 //	                                 var miCard modelito.Card//to return the bin, last, brand, type_card GetCardByToken
 							          log.Print(" verificar si ya existe ese token en tabla cards 01!\n")
 							         miCard.Token = dataObtained.Token //from the webservice cr.banwire.com method ADD
-							         errCard:= miCard.GetCardByToken(db)
-						          	log.Print(" verificar si ya existe ese token en tabla cards 02!\n")
+//							         errCard:= miCard.GetCardByToken(db)
+
+							         errCard:= miCard.GetCardByTokenAndCust(db,miCustomer.ID)							         
+							         
+							         
+						          	log.Print(" verificar si ya existe ese token en tabla cards  para el mismo cliente 02!\n")
 									if errCard != nil {
 										 if strings.Contains(errCard.Error(),"no rows in result set") {
                                           //no existe, entocnes procede a insertarlo
-                                               log.Print(" TOKEN doesnot exist for a customer"+errCard.Error())
-											  //no existe ese token para algun customer reference, proceder a insertar en cards table
-											  //START
+                                          log.Print(" TOKEN does not exist for the same customer"+errCard.Error())
+											//no existe ese token para algun customer reference, proceder a insertar en cards table
+											//START
 									             log.Print("Listo para insertar card!\n")
 										         milast,errLast :=miu.ObtainLast4fromCard (requestData.Card) //utils.go
 										         mibin,errBin :=miu.ObtainBINfromCard (requestData.Card) //utils.go
@@ -242,8 +261,8 @@ var errCards error
                                           //end if strings.contains 
 										 }else{
 										 	//error de la DB
-											  log.Print("Error: Checking token-customer:"+errCard.Error() )
-											  errorGeneral ="Error: Checking token-customer:"+errCard.Error() 
+											  log.Print("Error: Checking token-customer:customer."+errCard.Error() )
+											  errorGeneral ="Error: Checking token-customer:TOKEN already exists for this customer."+errCard.Error() 
 										 }
 										 
 									} else{
@@ -260,8 +279,8 @@ var errCards error
 									         miCard.Brand 
 									         miCard.Type 
 */									         
-									  log.Print("Error: TOKEN already exists for a customer:")
-									  errorGeneral ="Error: TOKEN already exists for a customer:"
+									  log.Print("Error: Checking token-customer:TOKEN already exists for this customer.")
+									  errorGeneral ="Error: Checking token-customer:TOKEN already exists for this customer."
 
 								    }
 	
@@ -283,5 +302,4 @@ var errCards error
 
    	  return  miCard, errorGeneral
    }
-
 
