@@ -18,7 +18,7 @@ type Card struct {
     Brand   string    `sql:"type:varchar(30)`
     Type   string    `sql:"type:varchar(30)`
 }
-/////////////////////////////version 3.2
+/////////////////////////////version 3.2 :)
 func (u *Card) getCard(db *sql.DB) error {
     statement := fmt.Sprintf("SELECT token, last FROM card WHERE id=%d", u.ID)
     return db.QueryRow(statement).Scan(&u.Token, &u.Last)
