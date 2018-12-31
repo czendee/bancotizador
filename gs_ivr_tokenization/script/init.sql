@@ -25,4 +25,11 @@ id_customer bigserial,
 reference    varchar(100),   --constrain unique
 created_at         timestamp,
 last_update_at timestamp 
-)
+);
+
+CREATE TABLE banwirepayment(
+id_payment bigserial,
+token    varchar(100),   --constrain unique
+created_at         timestamp,
+amount      bigint,
+);

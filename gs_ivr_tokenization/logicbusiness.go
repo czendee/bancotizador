@@ -9,6 +9,7 @@ import (
 //	"time"
 //	"encoding/json"
 	 _ "github.com/lib/pq"   //use go get github.com/lib/pq
+
 )
 
 
@@ -102,120 +103,6 @@ func ProcessGettokenizedcards(w http.ResponseWriter,  requestData modelito.Reque
      return errorGeneral, errorGeneralNbr
 }
 
-// Processpayment  receive and handle the request from client, access DB
-func ProcessProcessPayment(w http.ResponseWriter, requestData modelito.RequestPayment) (string,string){
-	defer func() {
-		db.Connection.Close(nil)
-	}()
-    var result string
-    var errorGeneral string
-    var	errorGeneralNbr string
-
-    var resultadoPayment modelito.ExitoData
-    errorGeneral=""
-
-	////////////////////////////////////////////////validate parms
-	/// START
-    
-    if errorGeneral==""{//continue next step
-    	log.Print("CZ   STEP Validate Parms")
-
-		/// START
-	        result ="OK realizarpago"+requestData.Clientreference+"    :    " +requestData.Paymentreference+"    :    " +requestData.Token+"    :    " +requestData.Cvv+"    :    " +requestData.Amount+"    :    "
-		    log.Print("CZ    handler Listening test realizarpago:"+result)
-		    
-		     log.Print("CZ   STEP Validate paramters request")
-		    errorGeneral= validaReqProcessPayment(requestData)
-		
-		
-		/// END
-
-    }				    
-		        
-    if errorGeneral!="" {
-    	//prepare response with error 100
-    	log.Print("CZ    Prepare Response with 100. Missing parameter:"+errorGeneral)
-    	errorGeneral="ERROR:100 - Missing parameter"	+errorGeneral
-		errorGeneralNbr="100"
-    }
-
-	////////////////////////////////////////////////consume internal websrvice banwire
-	//////////////////            process payment
-	    if errorGeneral==""{//continue next step
-	    	log.Print("CZ   STEP Consume internal websrvice banwire")
-
-			/// START
-			
-			resultadoPayment, errorGeneral= logicProcesspaymentWeb(requestData , errorGeneral )  
-			/// END
-
-	    }				    
-	    if errorGeneral!="" && errorGeneralNbr==""{
-	    	//prepare response with error 110
-	    	log.Print("CZ    Prepare Response with 110. Error processing payment:"+errorGeneral)
-	    	errorGeneral="ERROR:110 - Error processing payment"	+errorGeneral
-			errorGeneralNbr="110"
-	    }
-								
-
-	////////////////////////////////////////////////DB	
-	//      update the score field: increase by 1
-	//      for this card
-	//	    
-	var  dataObtainedCard  modelito.Card
-	    if errorGeneral==""{//continue next step
-	    	log.Print("CZ   STEP  update the score field: increase by 1")
-			requestData, dataObtainedCard, errorGeneral= logicProcesspaymentDBV2(requestData , errorGeneral )  
-
-									log.Print(" medio token:!\n"+dataObtainedCard.Token)
-									log.Print(" medio bin:!\n"+dataObtainedCard.Bin)
-									log.Print(" medio last:!\n"+dataObtainedCard.Last)
-		    resultadoPayment.Marca = dataObtainedCard.Brand
-		    resultadoPayment.Bin = dataObtainedCard.Bin
-		    resultadoPayment.LastDigits= dataObtainedCard.Last
-		    resultadoPayment.Type = dataObtainedCard.Type
-		    
-	    }				    
-
-	    if errorGeneral!="" && errorGeneralNbr==""{
-	    	//prepare response with error 120
-	    	log.Print("CZ    Prepare Response with 120. Error recording results in DB:"+errorGeneral)
-	    	errorGeneral="ERROR: 120 - Error recording results in DB"	+errorGeneral
-			errorGeneralNbr="120"
-	    }
-
-    		    
-	//response
-	////////////////////////////////////////////////http response	
-	//      prepare the JSON response
-	//	    
-	    if errorGeneral==""{//continue next step
-	    	log.Print("CZ   STEP  prepare the JSON response for SUCCESS")
-
-		    //  START 
-
-		    fieldDataBytesJsonPayment,err := getJsonResponsePaymentV2(resultadoPayment)					
-		        w.Header().Set("Content-Type", "application/json")
-		        w.Write(fieldDataBytesJsonPayment)
-				log.Print("CZ    handler Listening test handleProcesspayment  4"+"<html><body>"+ result+"</body></html>")		         
-                if err!=nil{
-                	log.Print("Eror en generando response")
-                    errorGeneral= err.Error()
-                }
-		    //  END
-        }
-
-	    if errorGeneral!="" && errorGeneralNbr=="" {//continue next step
-	    	log.Print("CZ   prepare the JSON response for ERROR")
-
-		    //  START 
-		    errorGeneral="ERROR:130 -Error preparing the response"	+errorGeneral
-			errorGeneralNbr="130"
-		    //  END
-        }
- log.Print("CZ  END   handler Listening DB  realizarpago  2")	
-     return errorGeneral, errorGeneralNbr
-}
 
 
 // Generatetokenized for receive and handle the request from client
@@ -252,6 +139,9 @@ func ProcessGeneratetokenized(w http.ResponseWriter, requestData modelito.Reques
     	errorGeneral="ERROR :200 -Missing parameter "	+errorGeneral
 		errorGeneralNbr="200"
     }
+
+
+
 
 	////////////////////////////////////////////////consume internal websrvice banwire
 	//////////////////            tokenization 
@@ -325,49 +215,149 @@ func ProcessGeneratetokenized(w http.ResponseWriter, requestData modelito.Reques
 
 
 
-
 func GetCardType(number string) string {
 	return "VISA"
-/*
- * 
-
-// visa
-var re = new RegExp("^4");
- if (number.match(re) != null)
-     return "Visa"; 
-     
-// Mastercard
- // Updated for Mastercard 2017 BINs expansion
- if (/^(5[1-5][0-9]{14}|2(22[1-9][0-9]{12}|2[3-9][0-9]{13}|[3-6][0-9]{14}|7[0-1][0-9]{13}|720[0-9]{12}))$/.test(number)) 
-  return "Mastercard"; 
-  
-  // AMEX 
-  re = new RegExp("^3[47]");
-  if (number.match(re) != null) return "AMEX";
-  // Discover
-  re = new RegExp("^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)");
-  if (number.match(re) != null)
-  return "Discover";
-  // Diners
-  re = new RegExp("^36"); 
-  if (number.match(re) != null)
-    return "Diners"; 
-    // Diners - Carte Blanche 
-    
-    re = new RegExp("^30[0-5]");
-    if (number.match(re) != null)
-    return "Diners - Carte Blanche";
-    
-    // JCB
-    re = new RegExp("^35(2[89]|[3-8][0-9])");
-    if (number.match(re) != null)
-    return "JCB";
-    // Visa Electron
-    re = new RegExp("^(4026|417500|4508|4844|491(3|7))"); 
-    if (number.match(re) != null) 
-    return "Visa Electron";
-    return ""; 
- */
 }
 
 
+/////////////////////////v4
+/////////////////////////v4
+
+// v4Processpayment  receive and handle the request from client, access DB
+func v4ProcessProcessPayment(w http.ResponseWriter, requestData modelito.RequestPayment) (string,string){
+	defer func() {
+		db.Connection.Close(nil)
+	}()
+    var result string
+    var errorGeneral string
+    var	errorGeneralNbr string
+
+    var resultadoPayment modelito.ExitoData
+    errorGeneral=""
+
+	////////////////////////////////////////////////validate parms
+	/// START
+    
+    if errorGeneral==""{//continue next step
+    	log.Print("CZ   STEP Validate Parms")
+
+		/// START
+	        result ="OK realizarpago"+requestData.Clientreference+"    :    " +requestData.Paymentreference+"    :    " +requestData.Token+"    :    " +requestData.Cvv+"    :    " +requestData.Amount+"    :    "
+		    log.Print("CZ    handler Listening test realizarpago:"+result)
+		    
+		     log.Print("CZ   STEP Validate paramters request")
+		    errorGeneral= validaReqProcessPayment(requestData)
+		
+		
+		/// END
+
+    }				    
+		        
+    if errorGeneral!="" {
+    	//prepare response with error 100
+    	log.Print("CZ    Prepare Response with 100. Missing parameter:"+errorGeneral)
+    	errorGeneral="ERROR:100 - Missing parameter"	+errorGeneral
+		errorGeneralNbr="100"
+    }
+//////////////////////////////////////////DB verify if less payments for the same card
+//////////////////////////////////////////in the same day
+
+	////////////////////////////////////////////////DB	
+	//	    resultado,errfetchDB:= fetchFromDB ()
+ var valoresParaResponder  []modelito.Payment
+	if errorGeneral==""{//continue next step
+
+     	 log.Print("CZ   STEP Consume DB to check if more payments cvan be done today for this card")
+         valoresParaResponder,errorGeneral =logicDBCheckNumberOfPaymentsToday(requestData, errorGeneral) 
+
+    }				    
+    if errorGeneral!="" && errorGeneralNbr==""{
+    	//prepare response with error 105
+    	log.Print("CZ    Prepare Response with 105. Error Max payments today for this card exceeded:"+errorGeneral)
+    	errorGeneral="ERROR 105 -  Error Max payments today for this card exceeded -"	+errorGeneral
+	    errorGeneralNbr="105"
+    }
+     if valoresParaResponder == nil{
+         
+     }
+		        
+	//response
+    log.Print("CZ    handler DB Listening test gettokenizedcards  2")					
+
+	////////////////////////////////////////////////consume internal websrvice banwire
+	//////////////////            process payment
+	    if errorGeneral==""{//continue next step
+	    	log.Print("CZ   STEP Consume internal websrvice banwire")
+
+			/// START
+			
+			resultadoPayment, errorGeneral= logicProcesspaymentWeb(requestData , errorGeneral )  
+			/// END
+
+	    }				    
+	    if errorGeneral!="" && errorGeneralNbr==""{
+	    	//prepare response with error 110
+	    	log.Print("CZ    Prepare Response with 110. Error processing payment:"+errorGeneral)
+	    	errorGeneral="ERROR:110 - Error processing payment"	+errorGeneral
+			errorGeneralNbr="110"
+	    }
+								
+
+	////////////////////////////////////////////////DB	
+	//      update the score field: increase by 1
+	//      for this card
+	//	    
+	var  dataObtainedCard  modelito.Card
+	    if errorGeneral==""{//continue next step
+	    	log.Print("CZ   STEP  update the score field: increase by 1")
+			requestData, dataObtainedCard, errorGeneral= logicProcesspaymentDBV4(requestData , errorGeneral )  
+
+									log.Print(" medio token:!\n"+dataObtainedCard.Token)
+									log.Print(" medio bin:!\n"+dataObtainedCard.Bin)
+									log.Print(" medio last:!\n"+dataObtainedCard.Last)
+		    resultadoPayment.Marca = dataObtainedCard.Brand
+		    resultadoPayment.Bin = dataObtainedCard.Bin
+		    resultadoPayment.LastDigits= dataObtainedCard.Last
+		    resultadoPayment.Type = dataObtainedCard.Type
+		    
+	    }				    
+
+	    if errorGeneral!="" && errorGeneralNbr==""{
+	    	//prepare response with error 120
+	    	log.Print("CZ    Prepare Response with 120. Error recording results in DB:"+errorGeneral)
+	    	errorGeneral="ERROR: 120 - Error recording results in DB"	+errorGeneral
+			errorGeneralNbr="120"
+	    }
+
+    		    
+	//response
+	////////////////////////////////////////////////http response	
+	//      prepare the JSON response
+	//	    
+	    if errorGeneral==""{//continue next step
+	    	log.Print("CZ   STEP  prepare the JSON response for SUCCESS")
+
+		    //  START 
+
+		    fieldDataBytesJsonPayment,err := getJsonResponsePaymentV2(resultadoPayment)					
+		        w.Header().Set("Content-Type", "application/json")
+		        w.Write(fieldDataBytesJsonPayment)
+				log.Print("CZ    handler Listening test handleProcesspayment  4"+"<html><body>"+ result+"</body></html>")		         
+                if err!=nil{
+                	log.Print("Eror en generando response")
+                    errorGeneral= err.Error()
+                }
+		    //  END
+        }
+
+	    if errorGeneral!="" && errorGeneralNbr=="" {//continue next step
+	    	log.Print("CZ   prepare the JSON response for ERROR")
+
+		    //  START 
+		    errorGeneral="ERROR:130 -Error preparing the response"	+errorGeneral
+			errorGeneralNbr="130"
+		    //  END
+        }
+ log.Print("CZ  END   handler Listening DB  realizarpago  2")	
+     return errorGeneral, errorGeneralNbr
+}
