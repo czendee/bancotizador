@@ -9,7 +9,6 @@ import (
 //	"time"
 //	"encoding/json"
 	 _ "github.com/lib/pq"   //use go get github.com/lib/pq
-
 )
 
 
@@ -102,123 +101,6 @@ func ProcessGettokenizedcards(w http.ResponseWriter,  requestData modelito.Reque
 
      return errorGeneral, errorGeneralNbr
 }
-
-
-
-// Generatetokenized for receive and handle the request from client
-func ProcessGeneratetokenized(w http.ResponseWriter, requestData modelito.RequestTokenized) (string,string) {
-	defer func() {
-		db.Connection.Close(nil)
-	}()
-	  var result string
-
-     var errorGeneral string
-     var errorGeneralNbr string
-     
-     var resultCardTokenized modelito.Card
-     
-     var obtainedDataWebservice modelito.ExitoDataTokenized
-     
-    errorGeneral=""
-
-
-	////////////////////////////////////////////////validate parms
-	/// START
-    if errorGeneral==""{//continue next step
-		        result ="OK realizarpago"+requestData.Clientreference+"    :    " +requestData.Paymentreference+"    :    " +requestData.Card+"    :    " +requestData.Exp+"    :    " +requestData.Cvv
-    		    log.Print("CZ    handler Listening test handleGeneratetokenized:"+result)
-		     log.Print("CZ   STEP Validate paramters request")
-		    errorGeneral= validaReqGenerateTokenized(requestData)	
-		/// END
-
-	}	
-		              
-    if errorGeneral!="" && errorGeneralNbr=="" {
-    	//prepare response with error 800
-    	log.Print("CZ    Prepare Response with 200. Missing parameter:"+errorGeneral)
-    	errorGeneral="ERROR :200 -Missing parameter "	+errorGeneral
-		errorGeneralNbr="200"
-    }
-
-
-
-
-	////////////////////////////////////////////////consume internal websrvice banwire
-	//////////////////            tokenization 
-
-    if errorGeneral==""{//continue next step
-				/// START
-				obtainedDataWebservice, errorGeneral =logicGeneratetokenizedWeb(requestData, errorGeneral)
-				
-				/// END
-	}	
-
-    if errorGeneral!="" && errorGeneralNbr==""{
-    	//prepare response with error 210
-    	log.Print("CZ    Prepare Response with 210. Error processing payment:"+errorGeneral)
-    	errorGeneral="ERROR:210 -Error processing payment:"	+errorGeneral
-		errorGeneralNbr="210"
-    }
-
-				
-				
-	////////////////////////////////////////////////DB	
-	//	    insert new record in Card , if customer doesn't exist, insert a new one?
-	//  Update if exist, if not insert in Customer
-
-    if errorGeneral==""{//continue next stepjhlkjg 
-        	log.Print("CZ   el  token:"+obtainedDataWebservice.Token)
-    				resultCardTokenized, errorGeneral =logicGeneratetokenizedDBV2(requestData,obtainedDataWebservice , errorGeneral)
-    						
-	}					
-
-    if errorGeneral!="" && errorGeneralNbr==""{
-    	//prepare response with error 220
-    	log.Print("CZ    Prepare Response with 220. Error generating token:"+errorGeneral)
-    	errorGeneral="ERROR:220 -Error generating token:"	+errorGeneral
-		errorGeneralNbr="220"
-    }
-
-	//response
-    if errorGeneral==""{//continue next step
-		log.Print("CZ   STEP Post the response JSON ready")
-		
-			/// START
-		fieldDataBytesJsonTokenize,err := getJsonResponseTokenizeV2(resultCardTokenized)
-			
-		log.Print("CZ    handler Listening test realizarpago  3")	
-	    
-	    w.Header().Set("Content-Type", "application/json")
-	    w.Write(fieldDataBytesJsonTokenize)
-		log.Print("CZ    handler Listening test handleGeneratetokenized  4"+"<html><body>"+ result+"</body></html>")		         		         
-        if err!=nil{
-        	log.Print("Eror en generando response")
-	        errorGeneral= err.Error()
-        }
-				
-		/// END
-	}	
-
-    if errorGeneral!="" && errorGeneralNbr==""{
-    	//prepare response with error 230
-    	log.Print("CZ    Prepare Response with 230. Error generating Response Tokenized:"+errorGeneral)
-    	errorGeneral="ERROR:230 -Error generating Response Tokenized:"	+errorGeneral
-		errorGeneralNbr="230"
-    }
-    
-	 log.Print("CZ  ends func tokenized")
-	 
-	return errorGeneral, errorGeneralNbr
-}
-
-
-
-
-
-func GetCardType(number string) string {
-	return "VISA"
-}
-
 
 /////////////////////////v4
 /////////////////////////v4
@@ -361,3 +243,157 @@ func v4ProcessProcessPayment(w http.ResponseWriter, requestData modelito.Request
  log.Print("CZ  END   handler Listening DB  realizarpago  2")	
      return errorGeneral, errorGeneralNbr
 }
+
+// Generatetokenized for receive and handle the request from client
+func ProcessGeneratetokenized(w http.ResponseWriter, requestData modelito.RequestTokenized) (string,string) {
+	defer func() {
+		db.Connection.Close(nil)
+	}()
+	  var result string
+
+     var errorGeneral string
+     var errorGeneralNbr string
+     
+     var resultCardTokenized modelito.Card
+     
+     var obtainedDataWebservice modelito.ExitoDataTokenized
+     
+    errorGeneral=""
+
+
+	////////////////////////////////////////////////validate parms
+	/// START
+    if errorGeneral==""{//continue next step
+		        result ="OK realizarpago"+requestData.Clientreference+"    :    " +requestData.Paymentreference+"    :    " +requestData.Card+"    :    " +requestData.Exp+"    :    " +requestData.Cvv
+    		    log.Print("CZ    handler Listening test handleGeneratetokenized:"+result)
+		     log.Print("CZ   STEP Validate paramters request")
+		    errorGeneral= validaReqGenerateTokenized(requestData)	
+		/// END
+
+	}	
+		              
+    if errorGeneral!="" && errorGeneralNbr=="" {
+    	//prepare response with error 800
+    	log.Print("CZ    Prepare Response with 200. Missing parameter:"+errorGeneral)
+    	errorGeneral="ERROR :200 -Missing parameter "	+errorGeneral
+		errorGeneralNbr="200"
+    }
+
+	////////////////////////////////////////////////consume internal websrvice banwire
+	//////////////////            tokenization 
+
+    if errorGeneral==""{//continue next step
+				/// START
+				obtainedDataWebservice, errorGeneral =logicGeneratetokenizedWeb(requestData, errorGeneral)
+				
+				/// END
+	}	
+
+    if errorGeneral!="" && errorGeneralNbr==""{
+    	//prepare response with error 210
+    	log.Print("CZ    Prepare Response with 210. Error processing payment:"+errorGeneral)
+    	errorGeneral="ERROR:210 -Error processing payment:"	+errorGeneral
+		errorGeneralNbr="210"
+    }
+
+				
+				
+	////////////////////////////////////////////////DB	
+	//	    insert new record in Card , if customer doesn't exist, insert a new one?
+	//  Update if exist, if not insert in Customer
+
+    if errorGeneral==""{//continue next stepjhlkjg 
+        	log.Print("CZ   el  token:"+obtainedDataWebservice.Token)
+    				resultCardTokenized, errorGeneral =logicGeneratetokenizedDBV2(requestData,obtainedDataWebservice , errorGeneral)
+    						
+	}					
+
+    if errorGeneral!="" && errorGeneralNbr==""{
+    	//prepare response with error 220
+    	log.Print("CZ    Prepare Response with 220. Error generating token:"+errorGeneral)
+    	errorGeneral="ERROR:220 -Error generating token:"	+errorGeneral
+		errorGeneralNbr="220"
+    }
+
+	//response
+    if errorGeneral==""{//continue next step
+		log.Print("CZ   STEP Post the response JSON ready")
+		
+			/// START
+		fieldDataBytesJsonTokenize,err := getJsonResponseTokenizeV2(resultCardTokenized)
+			
+		log.Print("CZ    handler Listening test realizarpago  3")	
+	    
+	    w.Header().Set("Content-Type", "application/json")
+	    w.Write(fieldDataBytesJsonTokenize)
+		log.Print("CZ    handler Listening test handleGeneratetokenized  4"+"<html><body>"+ result+"</body></html>")		         		         
+        if err!=nil{
+        	log.Print("Eror en generando response")
+	        errorGeneral= err.Error()
+        }
+				
+		/// END
+	}	
+
+    if errorGeneral!="" && errorGeneralNbr==""{
+    	//prepare response with error 230
+    	log.Print("CZ    Prepare Response with 230. Error generating Response Tokenized:"+errorGeneral)
+    	errorGeneral="ERROR:230 -Error generating Response Tokenized:"	+errorGeneral
+		errorGeneralNbr="230"
+    }
+    
+	 log.Print("CZ  ends func tokenized")
+	 
+	return errorGeneral, errorGeneralNbr
+}
+
+
+
+
+
+
+func GetCardType(number string) string {
+	return "VISA"
+/*
+ * 
+
+// visa
+var re = new RegExp("^4");
+ if (number.match(re) != null)
+     return "Visa"; 
+     
+// Mastercard
+ // Updated for Mastercard 2017 BINs expansion
+ if (/^(5[1-5][0-9]{14}|2(22[1-9][0-9]{12}|2[3-9][0-9]{13}|[3-6][0-9]{14}|7[0-1][0-9]{13}|720[0-9]{12}))$/.test(number)) 
+  return "Mastercard"; 
+  
+  // AMEX 
+  re = new RegExp("^3[47]");
+  if (number.match(re) != null) return "AMEX";
+  // Discover
+  re = new RegExp("^(6011|622(12[6-9]|1[3-9][0-9]|[2-8][0-9]{2}|9[0-1][0-9]|92[0-5]|64[4-9])|65)");
+  if (number.match(re) != null)
+  return "Discover";
+  // Diners
+  re = new RegExp("^36"); 
+  if (number.match(re) != null)
+    return "Diners"; 
+    // Diners - Carte Blanche 
+    
+    re = new RegExp("^30[0-5]");
+    if (number.match(re) != null)
+    return "Diners - Carte Blanche";
+    
+    // JCB
+    re = new RegExp("^35(2[89]|[3-8][0-9])");
+    if (number.match(re) != null)
+    return "JCB";
+    // Visa Electron
+    re = new RegExp("^(4026|417500|4508|4844|491(3|7))"); 
+    if (number.match(re) != null) 
+    return "Visa Electron";
+    return ""; 
+ */
+}
+
+
