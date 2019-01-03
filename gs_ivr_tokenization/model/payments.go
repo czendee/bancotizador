@@ -30,11 +30,11 @@ func GetTodayPaymentsByTokenCard(db *sql.DB, eltoken string ) ([]Payment, error)
 //--and created_at < now()::date + interval '1h'
 //--and created_at- interval '6h' >=  now()::date + interval '2minutes' 
 
-        statement := fmt.Sprintf("SELECT token,created_at,amount FROM banwirepayment WHERE token='%s' and created_at- interval '6h' >= now()::date + interval '1minutes' ",eltoken)
+        statement := fmt.Sprintf("SELECT token,created_at,amount FROM banwirepayment WHERE token='%s' and created_at- interval '6h' >= (now()- interval '6h')::date + interval '1minutes' ",eltoken)
         
 //        return db.QueryRow(statement).Scan(&u.Token, &u.Created_at,&u.Amount),nil
 
-log.Print("procesando GetTodayPaymentsByTokenCard"+"SELECT token,created_at,amount FROM banwirepayment WHERE token='%s' and created_at- interval '6h' >= now()::date + interval '1minutes' ",eltoken)
+log.Print("procesando GetTodayPaymentsByTokenCard"+"SELECT token,created_at,amount FROM banwirepayment WHERE token='%s' and created_at- interval '6h' >= (now()- interval '6h')::date + interval '1minutes' ",eltoken)
 
     rows, err := db.Query(statement)
     log.Print("GetTodayPaymentsByTokenCard 02.1!\n")
