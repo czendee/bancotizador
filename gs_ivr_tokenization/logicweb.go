@@ -36,7 +36,9 @@ import (
 		"reference": {requestData.Paymentreference}, 
 		"token": {requestData.Token},         
 		"amount": {requestData.Amount},          
+	    "cvv": {requestData.Cvv},  
 	}
+log.Println("web api el cvv"+requestData.Cvv)
 
 	    response,err := http.PostForm("https://cr.banwire.com/?action=card",
 	valoresbanwire)
