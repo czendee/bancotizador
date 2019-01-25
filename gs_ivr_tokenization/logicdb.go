@@ -11,21 +11,22 @@ import (
 	miu "banwire/services/gs_ivr_tokenization/util"
 )
 
-
+/*
     const (
-        DB_USER     = "banwire"
-        DB_PASSWORD = "banwire"
-        DB_NAME     = "banwire"
-        DB_SERVER     = "bin_banwire_service_gs_ivr_postgres" //"54.163.207.112"
+        DB_USER     = "lerepagr"
+        DB_PASSWORD = "Ag8q2utgSsVy2tyR7_M9cNYbzsqSvwma"
+        DB_NAME     = "lerepagr"
+        DB_SERVER     = "stampy.db.elephantsql.com" //"54.163.207.112"
         DB_PORT      = 5432
     )
- 
-
-///////////////// ///////////////////////////////////////version 3.2
+ */
 
 
 ///////////////// ///////////////////////////////////////version 3.2
-///////////////// ///////////////////////////////////////version 3.2 :)
+
+
+///////////////// ///////////////////////////////////////version 3.2
+
 
    func logicDBGettokenizedcardsV2(requestData modelito.RequestTokenizedCards, errorGeneral string) ([]modelito.Card,string) {
 	////////////////////////////////////////////////obtain parms in JSON
@@ -38,7 +39,8 @@ var errCards error
 				    var db *sql.DB
 				    // Create connection string
 					connString := fmt.Sprintf("host=%s dbname=%s user=%s password=%s port=%d sslmode=disable",
-						DB_SERVER,DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
+//						DB_SERVER,DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
+						Config_DB_server,Config_DB_name, Config_DB_user, Config_DB_pass, Config_DB_port)
 				
 				
 
@@ -90,99 +92,6 @@ var errCards error
    	  return  resultCards, errorGeneral
    }
 
-   func logicProcesspaymentDBV4(requestData modelito.RequestPayment, errorGeneral string) (modelito.RequestPayment,modelito.Card,string) {
-	////////////////////////////////////////////////process db steps
-   //START  
-           var miCard modelito.Card//to return the bin, last, brand, type_card
-           var miPayment modelito.Payment//to insert the payment
-		    //  START 
-			    var errdb error
-			    var db *sql.DB
-			    // Create connection string
-				connString := fmt.Sprintf("host=%s dbname=%s user=%s password=%s port=%d sslmode=disable",
-				DB_SERVER,DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
-		
-		
-
-			 // Create connection pool
-				db, errdb = sql.Open("postgres", connString)
-				if errdb != nil {
-					log.Print("Error creating connection pool: " + errdb.Error())
-				}
-				// Close the database connection pool after program executes
-				 defer db.Close()
-				if errdb == nil {
-					log.Print("Connected!\n")
-			
-				
-					errPing:= db.Ping()
-					if errPing != nil {
-					  log.Print("Error: Could not establish a connection with the database:"+ errPing.Error())
-					  errorGeneral =errPing.Error()
-					}else{
-				         log.Print("Ping ok!\n")
-				         var miCustomer modelito.Customer
-				         miCustomer.Reference = requestData.Clientreference 
-				         errCustomer:= miCustomer.GetCustomerByReference01(db)
-				         //in miCustomer.ID is the value of the id_customer 
-						if errCustomer != nil {
-							//the customer does not exist to score this payment
-							
-						  log.Print("Error: Customer does not Exists, payment done, buit score not updated: "+ errCustomer.Error())
-						  errorGeneral ="Error: Customer does not Exists. Payment applied, but card score not increased: "+ errCustomer.Error()
-                           
-						} else{
-							//the customer exists
-					         log.Print("the customer exists, ID interno es "+miCustomer.ID)
-					         miCard.Token =requestData.Token
-					         errUpdate:=miCard.IncreaseScoreCardAndCust(db,miCustomer.ID )
-					         log.Print("regresa func  IncreaseScoreCard ok!\n")
-							 if errUpdate != nil {
-								  log.Print("Error: increasing the score for this card:"+ errUpdate.Error())
-							      errorGeneral =errUpdate.Error()
- 							 }else{
-                                    //the increase was done, now try record the payment for rule (3max payments for tcd a day)
-                                    log.Print("About record Payment info in DB, the customer exists, ID interno es "+miCustomer.ID)
-                                    miPayment.Token =requestData.Token
-                                    miPayment.Amount =requestData.Amount
-                                    errInsertPay:=miPayment.CreatePayment(db )
-                                    log.Print("regresa func  CreatePayment ok!\n")
-                                    if errInsertPay != nil {
-                                        log.Print("Error: Recording the payment info in the DB:"+ errInsertPay.Error())
-                                        errorGeneral =errInsertPay.Error()
-                                    }else{
-                                        //increase ok and the payment detail recorded  ok
-                                        log.Print(" se ejecuta  select table card to get bin, last, brand. type  01!\n")
-                                            miCard.Token = requestData.Token
-                                            errCard:= miCard.GetCardByToken(db)
-                                        log.Print(" se ejecuta select table card to get bin, last, brand. type  02!\n")
-                                            if errCard != nil {
-                                            log.Print("Error: after payment was applied and score increased,There was a problem getting the customer:"+ errCard.Error())
-                                            errorGeneral ="Error: after payment was applied and score increased,There was a problem getting the customer:"+ errCard.Error()
-                                            
-                                            } else{
-                                              log.Print(" select table card to get token:!\n"+miCard.Token)
-                                              log.Print(" select table card to get bin:!\n"+miCard.Bin)
-                                              log.Print(" select table card to get last:!\n"+miCard.Last)
-                                            }
-
-                                    }                                  
-	
-							 }//end else de increase
-
-                        }//end else de customer does exists
-
-			
-				    }
-			
-			
-				}
-		    
-		//  END updateCardScoreDB
-   
-   	  return  requestData, miCard, errorGeneral
-   }
-
 
 
    func logicGeneratetokenizedDBV2(requestData  modelito.RequestTokenized, dataObtained modelito.ExitoDataTokenized ,errorGeneral string) ( modelito.Card,string) {
@@ -194,7 +103,8 @@ var errCards error
 				    var db *sql.DB
 				    // Create connection string
 					connString := fmt.Sprintf("host=%s dbname=%s user=%s password=%s port=%d sslmode=disable",
-						DB_SERVER,DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
+//						DB_SERVER,DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
+                       Config_DB_server,Config_DB_name, Config_DB_user, Config_DB_pass, Config_DB_port)
 				
 				
 
@@ -232,7 +142,6 @@ var errCards error
 							          log.Print(" verificar si ya existe ese token en tabla cards 01!\n")
 							         miCard.Token = dataObtained.Token //from the webservice cr.banwire.com method ADD
 //							         errCard:= miCard.GetCardByToken(db)
-
 							         errCard:= miCard.GetCardByTokenAndCust(db,miCustomer.ID)							         
 							         
 							         
@@ -318,6 +227,7 @@ var errCards error
    	  return  miCard, errorGeneral
    }
 
+
 /////////////////////////////////v4
 /////////////////////////////////v4
 
@@ -335,8 +245,8 @@ var errPayments error
 				    var db *sql.DB
 				    // Create connection string
 					connString := fmt.Sprintf("host=%s dbname=%s user=%s password=%s port=%d sslmode=disable",
-						DB_SERVER,DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
-				
+//						DB_SERVER,DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
+                        Config_DB_server,Config_DB_name, Config_DB_user, Config_DB_pass, Config_DB_port)				
 				
 
 					 // Create connection pool
@@ -389,3 +299,98 @@ var errPayments error
    //END
    	  return  resultPayments, errorGeneral
    }
+
+
+   func logicProcesspaymentDBV4(requestData modelito.RequestPayment, errorGeneral string) (modelito.RequestPayment,modelito.Card,string) {
+	////////////////////////////////////////////////process db steps
+   //START  
+           var miCard modelito.Card//to return the bin, last, brand, type_card
+           var miPayment modelito.Payment//to insert the payment
+		    //  START 
+			    var errdb error
+			    var db *sql.DB
+			    // Create connection string
+				connString := fmt.Sprintf("host=%s dbname=%s user=%s password=%s port=%d sslmode=disable",
+//				DB_SERVER,DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
+                Config_DB_server,Config_DB_name, Config_DB_user, Config_DB_pass, Config_DB_port)		
+		
+
+			 // Create connection pool
+				db, errdb = sql.Open("postgres", connString)
+				if errdb != nil {
+					log.Print("Error creating connection pool: " + errdb.Error())
+				}
+				// Close the database connection pool after program executes
+				 defer db.Close()
+				if errdb == nil {
+					log.Print("Connected!\n")
+			
+				
+					errPing:= db.Ping()
+					if errPing != nil {
+					  log.Print("Error: Could not establish a connection with the database:"+ errPing.Error())
+					  errorGeneral =errPing.Error()
+					}else{
+				         log.Print("Ping ok!\n")
+				         var miCustomer modelito.Customer
+				         miCustomer.Reference = requestData.Clientreference 
+				         errCustomer:= miCustomer.GetCustomerByReference01(db)
+				         //in miCustomer.ID is the value of the id_customer 
+						if errCustomer != nil {
+							//the customer does not exist to score this payment
+							
+						  log.Print("Error: Customer does not Exists, payment done, buit score not updated: "+ errCustomer.Error())
+						  errorGeneral ="Error: Customer does not Exists. Payment applied, but card score not increased: "+ errCustomer.Error()
+                           
+						} else{
+							//the customer exists
+					         log.Print("the customer exists, ID interno es "+miCustomer.ID)
+					         miCard.Token =requestData.Token
+					         errUpdate:=miCard.IncreaseScoreCardAndCust(db,miCustomer.ID )
+					         log.Print("regresa func  IncreaseScoreCard ok!\n")
+							 if errUpdate != nil {
+								  log.Print("Error: increasing the score for this card:"+ errUpdate.Error())
+							      errorGeneral =errUpdate.Error()
+ 							 }else{
+                                    //the increase was done, now try record the payment for rule (3max payments for tcd a day)
+                                    log.Print("About record Payment info in DB, the customer exists, ID interno es "+miCustomer.ID)
+                                    miPayment.Token =requestData.Token
+                                    miPayment.Amount =requestData.Amount
+                                    errInsertPay:=miPayment.CreatePayment(db )
+                                    log.Print("regresa func  CreatePayment ok!\n")
+                                    if errInsertPay != nil {
+                                        log.Print("Error: Recording the payment info in the DB:"+ errInsertPay.Error())
+                                        errorGeneral =errInsertPay.Error()
+                                    }else{
+                                        //increase ok and the payment detail recorded  ok
+                                        log.Print(" se ejecuta  select table card to get bin, last, brand. type  01!\n")
+                                            miCard.Token = requestData.Token
+                                            errCard:= miCard.GetCardByToken(db)
+                                        log.Print(" se ejecuta select table card to get bin, last, brand. type  02!\n")
+                                            if errCard != nil {
+                                            log.Print("Error: after payment was applied and score increased,There was a problem getting the customer:"+ errCard.Error())
+                                            errorGeneral ="Error: after payment was applied and score increased,There was a problem getting the customer:"+ errCard.Error()
+                                            
+                                            } else{
+                                              log.Print(" select table card to get token:!\n"+miCard.Token)
+                                              log.Print(" select table card to get bin:!\n"+miCard.Bin)
+                                              log.Print(" select table card to get last:!\n"+miCard.Last)
+                                            }
+
+                                    }                                  
+	
+							 }//end else de increase
+
+                        }//end else de customer does exists
+
+			
+				    }
+			
+			
+				}
+		    
+		//  END updateCardScoreDB
+   
+   	  return  requestData, miCard, errorGeneral
+   }
+

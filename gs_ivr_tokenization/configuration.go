@@ -18,7 +18,23 @@ var configFile string
 
 var RunMode string
 
+var Config_DB_pass string
+var Config_DB_user string
+var Config_DB_name string
+var Config_DB_server string
+var Config_DB_port int
+var Config_WS_crbanwire_pass string
 
+/*    const (
+        DB_USER     = "lerepagr"        
+        DB_PASSWORD = "Ag8q2utgSsVy2tyR7_M9cNYbzsqSvwma"
+        DB_NAME     = "lerepagr"
+        DB_SERVER     = "stampy.db.elephantsql.com" //"54.163.207.112"
+        DB_PORT      = 5432
+
+        CR_BANWIRE_USER      = "pruebasbw" //this was mentioned by charly Jan 2019
+    )
+*/
 
 func init() {
 	flag.StringVar(&RunMode, "mode", "api", "Service mode run (Options: api, batch)")
@@ -32,7 +48,7 @@ func init() {
 
 // loadConfiguration loads the configuration file
 func LoadConfiguration() {
-	log.Print("Loading configuration...")
+	log.Print("Loading configuration...v3.5")
 
 	if d, e := ioutil.ReadFile(configFile); e == nil {
 		e := json.Unmarshal(d, &Config)
@@ -53,18 +69,19 @@ func LoadConfiguration() {
 
 // config is the configuration structure object
 type config struct {
-	Database configDatabase `json:"database"`
+//	Database configDatabase `json:"database"`
+	Database configDatabase `json:"othersources"`
 }
 
 // configDatabase is the database structure object for configuration
 type configDatabase struct{}
 
 // UnmarshalJSON handles desearialization of configDatabase
-// and loads the database connections
+// and loads the othersources: database connections and webservices connections
 func (c *configDatabase) UnmarshalJSON(data []byte) error {
-
+ log.Print("UnmarshalJSON 00!:othersources")
 	var cc = []struct {
-		Drive string                   `json:"drive"`
+		Type string                   `json:"type"`
 		Nodes []map[string]interface{} `json:"nodes"`
 	}{}
 			log.Print("UnmarshalJSON 01!")
@@ -74,8 +91,8 @@ func (c *configDatabase) UnmarshalJSON(data []byte) error {
 	}
 			log.Print("UnmarshalJSON 02!")
 	for _, d := range cc {
-					log.Print("UnmarshalJSON 03.!"+d.Drive)
-		switch d.Drive {
+					log.Print("UnmarshalJSON 03.!"+d.Type)
+		switch d.Type {
 		case "postgresql":
 			log.Print("UnmarshalJSON 04!")
 			for _, n := range d.Nodes {
@@ -86,8 +103,16 @@ func (c *configDatabase) UnmarshalJSON(data []byte) error {
 					_db, _ := n["db"].(string)
 					user, _ := n["user"].(string)
 					pass, _ := n["password"].(string)
-
                     
+                    
+
+                    Config_DB_pass =pass
+                    Config_DB_user =user
+                    Config_DB_name =_db
+                    Config_DB_server =host
+                    Config_DB_port =int(port)            
+                    
+                    log.Print("---- The DB values  was assigned "+Config_DB_server)
 					if e := db.Connection.Set(db.NewPgDb(host, int(port), _db, user, pass)); e == nil {
 						log.Print("---- The postgresql database was loaded"+host)
 						log.Print("---- The postgresql database was loaded"+_db)
@@ -96,6 +121,20 @@ func (c *configDatabase) UnmarshalJSON(data []byte) error {
 					}
 				}
 							log.Print("UnmarshalJSON 06!")
+			}
+		case "crbanwire":
+			log.Print("UnmarshalJSON 2.04.2!")
+			for _, n := range d.Nodes {
+							log.Print("UnmarshalJSON 2.05!")
+				if active, _ := n["active"].(bool); active {
+                    passcrban,_:=n["passwordcrbanwire"].(string)
+                    
+                    log.Print("---- The value  was loaded"+passcrban)
+
+                     Config_WS_crbanwire_pass = passcrban
+                    log.Print("---- The crbanwire value  was assigned es "+Config_WS_crbanwire_pass)
+				}
+				log.Print("UnmarshalJSON 2.06!")
 			}
 
 			break
