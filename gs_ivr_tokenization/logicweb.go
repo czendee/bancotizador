@@ -32,7 +32,10 @@ import (
 
 	    valoresbanwire := url.Values{
 		"method": {"payment"},
-		"user": {"pruebasbw"},  //this value was mentioned by Charly
+//		"user": {"pruebasbw"},  //this value was mentioned by Charly dec 05,2018
+		"user": {Config_WS_crbanwire_pass},  //this value needs to be configurable to Move to production. 22 Jan 2019        
+
+
 		"reference": {requestData.Paymentreference}, 
 		"token": {requestData.Token},         
 		"amount": {requestData.Amount},          
@@ -87,7 +90,8 @@ log.Println("web api el cvv"+requestData.Cvv)
 	   if errorGeneral==""{
 		    valoresbanwire := url.Values{
 			"method": {"add"},
-			"user": {"pruebasbw"},
+//		"user": {"pruebasbw"},  //this value was mentioned by Charly dec 05,2018
+		"user": {Config_WS_crbanwire_pass},  //this value needs to be configurable to Move to production. 22 Jan 2019        
 			"email": {"generalseguros@genearlseguros.com"},
 			"number": {requestData.Card},  //
 			"exp_month": {month},              //requestData.Exp  solo mes
