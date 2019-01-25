@@ -1,7 +1,7 @@
 {
-	"database" : [
+	"othersources" : [
 		{
-			"drive" : "postgresql",
+			"type" : "postgresql",
 			"nodes" : [
 				{
 					"active"   : true,
@@ -10,6 +10,16 @@
 					"db" 	   : "lerepagr",
 					"user" 	   : "lerepagr",
 					"password" : "Ag8q2utgSsVy2tyR7_M9cNYbzsqSvwma"
+                                        
+				}
+			]
+		},
+		{
+			"type" : "crbanwire",
+			"nodes" : [
+				{
+					"active"   : true,
+                       "passwordcrbanwire" : "pruebasbw"
 				}
 			]
 		}
