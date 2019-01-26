@@ -15,11 +15,11 @@
 				{
                    
 					"active"   : true,
-                    "host" 	   : "stampy.db.elephantsql.com",
+					"host" 	   : "bin_banwire_service_gs_ivr_postgres",
 					"port" 	   : 5432,
-					"db" 	   : "lerepagr",
-					"user" 	   : "lerepagr",
-					"password" : "Ag8q2utgSsVy2tyR7_M9cNYbzsqSvwma"
+					"db" 	   : "banwire",
+					"user" 	   : "banwire",
+					"password" : "banwire"
 
 				}
 			]
