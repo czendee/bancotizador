@@ -182,6 +182,26 @@ func v4ProcessProcessPayment(w http.ResponseWriter, requestData modelito.Request
 	    	log.Print("CZ    Prepare Response with 110. Error processing payment:"+errorGeneral)
 	    	errorGeneral="ERROR:110 - Error processing payment"	+errorGeneral
 			errorGeneralNbr="110"
+
+            ///START: New rule: 25/01/2019 - Remove Card if failed first payment            
+            //sino hay pago registrado antes, entonces DELETE la card
+             var valoresParaResponder  string
+             var errorGeneralRemoveCard string
+
+            log.Print("CZ   STEP Consume DB to Remove Card if failed first payment")
+            valoresParaResponder,errorGeneralRemoveCard =logicDBRemoveCardIfNotPreviousPayment(requestData, errorGeneral) 
+
+            if errorGeneral!="" && errorGeneralRemoveCard==""{
+                //alredy  response, conitnue  with error 110
+                log.Print("CZ   NO Prepare Response. Continue with 110. Error removing card:"+errorGeneralRemoveCard)
+            }
+            if valoresParaResponder == ""{
+                
+            }else{
+                log.Print("CZ   Continue with 110. Remove card for failed 1st payment:"+valoresParaResponder)
+            }
+            ///END: New rule: 25/01/2019 - Remove Card if failed first payment            
+
 	    }
 								
 

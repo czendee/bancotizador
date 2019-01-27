@@ -394,3 +394,84 @@ var errPayments error
    	  return  requestData, miCard, errorGeneral
    }
 
+   func logicDBRemoveCardIfNotPreviousPayment(requestData modelito.RequestPayment, errorGeneral string) (string,string) {
+	//////////////////////////////////////////////
+   //START    
+
+ var miCard modelito.Card//to return the bin, last, brand, type_card
+var errPayments error
+var resultMssg string
+
+resultMssg=""
+				//  START fetchFromDB
+				    var errdb error
+				    var db *sql.DB
+				    // Create connection string
+					connString := fmt.Sprintf("host=%s dbname=%s user=%s password=%s port=%d sslmode=disable",
+//						DB_SERVER,DB_NAME, DB_USER, DB_PASSWORD, DB_PORT)
+                        Config_DB_server,Config_DB_name, Config_DB_user, Config_DB_pass, Config_DB_port)				
+				
+
+					 // Create connection pool
+					db, errdb = sql.Open("postgres", connString)
+					if errdb != nil {
+						log.Print("Error creating connection pool: " + errdb.Error())
+						errorGeneral=errdb.Error()
+					}
+					// Close the database connection pool after program executes
+					 defer db.Close()
+					if errdb == nil {
+						log.Print("Connected!\n")
+				
+					
+						errPing := db.Ping()
+						if errPing != nil {
+						  log.Print("Error: Could not establish a connection with the database:"+ errPing.Error())
+							  errorGeneral=errPing.Error()
+						}else{
+                            //start else -get previous paymnets to check if card is deleted or not
+					         log.Print("Ping ok!\n")
+				
+					         resultMssg,errPayments =modelito.GetAllPaymentsByTokenCard(db,requestData.Token)
+					         					         log.Print("regresa func  GetTodayPaymentsByTokenCard ok!\n")
+							if errPayments != nil {
+							  log.Print("Error: :"+ errPayments.Error())
+							  errorGeneral="Error: NO ABLE TO CHECK PREVIOUS PAYMENTS"+ errPayments.Error()
+							}
+							if resultMssg != "" {
+                                if resultMssg == "EXISTEN PREVIOS"{
+                                    //no se puede borrar
+                                    resultMssg ="Card not removed, as there are previous payments. OK"
+                                }else{
+                                    //se debe borrar la card
+                                    //the increase was done, now try record the payment for rule (3max payments for tcd a day)
+                                    log.Print("Delete card, as there was a problem with the payment and there are not previous payments ")
+                                    miCard.Token =requestData.Token
+
+                                    errDeleteCard:=miCard.DeleteCard(db )
+                                    log.Print("regresa func  DeleteCard ok!\n")
+                                    if errDeleteCard != nil {
+                                        log.Print("Error: Deleting card info in the DB:"+ errDeleteCard.Error())
+                                        errorGeneral ="Error: Deleting card info in the DB:"+ errDeleteCard.Error()
+                                    }else{
+                                        //card was removed succesfully,  ok
+                                        resultMssg ="Card removed OK"
+                                    }                                    
+                                }//end else Delete Card
+                                
+
+							}else{//End if, hay mensaje 
+                                //resultMssg is nil, as ther was an error
+                                resultMssg=""
+                            }
+
+					      }//end else -get previous paymnets to check if card is deleted or not
+				
+				
+					}
+				    
+				//  END db connDB
+   
+   //END
+   	  return  resultMssg, errorGeneral
+   }

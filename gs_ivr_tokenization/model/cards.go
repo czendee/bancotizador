@@ -63,6 +63,14 @@ func (u *Card) IncreaseScoreCard(db *sql.DB) error {
     return err
 }
 
+//Jan 27,2018: used in new rule to Remove card if 1st payment fails
+func (u *Card) DeleteCard(db *sql.DB) error {
+    statement := fmt.Sprintf("DELETE banwirecard WHERE token='%s'",  u.Token)
+    _, err := db.Exec(statement)
+    return err
+//    return errors.New("Not implemented")        
+}
+
 func (u *Card) deleteCard(db *sql.DB) error {
     return errors.New("Not implemented")
 }

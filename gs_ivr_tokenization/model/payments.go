@@ -63,6 +63,39 @@ log.Print("procesando GetTodayPaymentsByTokenCard"+"SELECT token,created_at,amou
   //   }
 }
 
+func GetAllPaymentsByTokenCard(db *sql.DB, eltoken string ) (string, error) {
+     	log.Print("procesando GetTodayPaymentsByTokenCard")
+        statement := fmt.Sprintf("SELECT token,created_at,amount FROM banwirepayment WHERE token='%s'  ",eltoken)
+        
+//        return db.QueryRow(statement).Scan(&u.Token, &u.Created_at,&u.Amount),nil
+
+log.Print("procesando GetTodayPaymentsByTokenCard"+"SELECT token,created_at,amount FROM banwirepayment WHERE token='%s'  ",eltoken)
+
+    rows, err := db.Query(statement)
+    log.Print("GetAllPaymentsByTokenCard 02.1!\n")
+    if err != nil {
+        return "", err
+    }
+    
+    log.Print("GetAllPaymentsByTokenCard 02.5!\n")
+    defer rows.Close()
+    
+    var cuantos int
+    cuantos=0
+    for rows.Next() {
+    	 log.Print("GetAllPaymentsByTokenCard 03!\n")
+         cuantos=cuantos+1
+    }
+    log.Print("GetAllPaymentsByTokenCard 04!\n")
+    if(cuantos>0){
+        log.Print("GetAllPaymentsByTokenCard 05! existen previos\n")
+         return "EXISTEN PREVIOS", nil;    
+    }else{
+        log.Print("GetAllPaymentsByTokenCard 05! no existen previos\n")
+         return "No EXISTEN PREVIOS", nil;      
+    }
+  
+}
 
 func (u *Payment) CreatePayment(db *sql.DB) error {
 
