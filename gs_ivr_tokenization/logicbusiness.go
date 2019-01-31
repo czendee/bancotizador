@@ -177,14 +177,21 @@ func v4ProcessProcessPayment(w http.ResponseWriter, requestData modelito.Request
 			/// END
 
 	    }				    
+								
 	    if errorGeneral!="" && errorGeneralNbr==""{
 	    	//prepare response with error 110
 	    	log.Print("CZ    Prepare Response with 110. Error processing payment:"+errorGeneral)
 	    	errorGeneral="ERROR:110 - Error processing payment"	+errorGeneral
 			errorGeneralNbr="110"
 
-            ///START: New rule: 25/01/2019 - Remove Card if failed first payment            
+	    }
+
+            ///START: New rule: 25/01/2019 - Remove Card if failed first payment 
+            //    rule 30/01/2019  , or parameters for first payment are missing or wrong
             //sino hay pago registrado antes, entonces DELETE la card
+
+	    if errorGeneral!="" && errorGeneralNbr!="105"{//except max 3 payments today 
+
              var valoresParaResponder  string
              var errorGeneralRemoveCard string
 
@@ -192,18 +199,19 @@ func v4ProcessProcessPayment(w http.ResponseWriter, requestData modelito.Request
             valoresParaResponder,errorGeneralRemoveCard =logicDBRemoveCardIfNotPreviousPayment(requestData, errorGeneral) 
 
             if errorGeneral!="" && errorGeneralRemoveCard==""{
-                //alredy  response, conitnue  with error 110
-                log.Print("CZ   NO Prepare Response. Continue with 110. Error removing card:"+errorGeneralRemoveCard)
+                //alredy  response, conitnue  with error 110,100
+                log.Print("CZ   NO Prepare Response. Continue with 100,110. Error removing card:"+errorGeneralRemoveCard)
             }
             if valoresParaResponder == ""{
                 
             }else{
-                log.Print("CZ   Continue with 110. Remove card for failed 1st payment:"+valoresParaResponder)
+                log.Print("CZ   Continue with error. Remove card for failed 1st payment:"+valoresParaResponder)
             }
-            ///END: New rule: 25/01/2019 - Remove Card if failed first payment            
 
-	    }
-								
+	    }//end if error first payment failed, or parameters for first payment are missing or wrong
+            ///END: New rule: 25/01/2019 - Remove Card if failed first payment
+            //    rule 30/01/2019  , or parameters for first payment are missing or wrong
+
 
 	////////////////////////////////////////////////DB	
 	//      update the score field: increase by 1
