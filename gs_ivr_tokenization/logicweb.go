@@ -32,18 +32,17 @@ import (
 
 	    valoresbanwire := url.Values{
 		"method": {"payment"},
-//		"user": {"pruebasbw"},  //this value was mentioned by Charly dec 05,2018
+//		"user": {"pruebasbw"},  //this value was mentioned by Charly  dec 05,2018
 		"user": {Config_WS_crbanwire_pass},  //this value needs to be configurable to Move to production. 22 Jan 2019        
-
-
 		"reference": {requestData.Paymentreference}, 
 		"token": {requestData.Token},         
 		"amount": {requestData.Amount},          
-	    "cvv": {requestData.Cvv},  
+        "cvv": {requestData.Cvv},  
 	}
 log.Println("web api el cvv"+requestData.Cvv)
+//	    response,err := http.PostForm("https://cr.banwire.com/?action=card",
+	    response,err := http.PostForm(Config_WS_crbanwire_url+"/?action=card",
 
-	    response,err := http.PostForm("https://cr.banwire.com/?action=card",
 	valoresbanwire)
 	
 	
@@ -103,7 +102,9 @@ log.Println("web api el cvv"+requestData.Cvv)
 			"postal_code": {"06000"},
 			}	
 
-		    response,err := http.PostForm("https://cr.banwire.com/?action=card&exists=1",
+//		    response,err := http.PostForm("https://cr.banwire.com/?action=card&exists=1",
+		    response,err := http.PostForm(Config_WS_crbanwire_url+"/?action=card&exists=1",
+
 			valoresbanwire)
 			
 		    if err != nil {

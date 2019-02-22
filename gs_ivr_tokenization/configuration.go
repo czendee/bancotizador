@@ -24,6 +24,8 @@ var Config_DB_name string
 var Config_DB_server string
 var Config_DB_port int
 var Config_WS_crbanwire_pass string
+var Config_WS_crbanwire_url string
+
 
 /*    const (
         DB_USER     = "lerepagr"        
@@ -93,6 +95,22 @@ func (c *configDatabase) UnmarshalJSON(data []byte) error {
 	for _, d := range cc {
 					log.Print("UnmarshalJSON 03.!"+d.Type)
 		switch d.Type {
+		case "crbanwire":
+			log.Print("UnmarshalJSON 2.04.2!")
+			for _, n := range d.Nodes {
+							log.Print("UnmarshalJSON 2.05!")
+				if active, _ := n["active"].(bool); active {
+                    passcrban,_:=n["passwordcrbanwire"].(string)
+                    urlcrban,_:=n["urlcrbanwire"].(string)
+                    
+                    log.Print("---- The value  was loaded"+passcrban)
+
+                     Config_WS_crbanwire_pass = passcrban
+                     Config_WS_crbanwire_url = urlcrban
+                    log.Print("---- The crbanwire value  was assigned es "+Config_WS_crbanwire_pass)
+				}
+				log.Print("UnmarshalJSON 2.06!")
+			}
 		case "postgresql":
 			log.Print("UnmarshalJSON 04!")
 			for _, n := range d.Nodes {
@@ -112,7 +130,10 @@ func (c *configDatabase) UnmarshalJSON(data []byte) error {
                     Config_DB_server =host
                     Config_DB_port =int(port)            
                     
-                    log.Print("---- The DB values  was assigned "+Config_DB_server)
+                    log.Print("---- The DB values  was assigned "+Config_DB_server)                    
+                    log.Print("---- The DB values  was assigned "+Config_DB_user)
+                    log.Print("---- The DB values  was assigned "+Config_DB_pass)
+                    log.Print("---- The DB values  was assigned "+Config_DB_name)
 					if e := db.Connection.Set(db.NewPgDb(host, int(port), _db, user, pass)); e == nil {
 						log.Print("---- The postgresql database was loaded"+host)
 						log.Print("---- The postgresql database was loaded"+_db)
@@ -121,20 +142,6 @@ func (c *configDatabase) UnmarshalJSON(data []byte) error {
 					}
 				}
 							log.Print("UnmarshalJSON 06!")
-			}
-		case "crbanwire":
-			log.Print("UnmarshalJSON 2.04.2!")
-			for _, n := range d.Nodes {
-							log.Print("UnmarshalJSON 2.05!")
-				if active, _ := n["active"].(bool); active {
-                    passcrban,_:=n["passwordcrbanwire"].(string)
-                    
-                    log.Print("---- The value  was loaded"+passcrban)
-
-                     Config_WS_crbanwire_pass = passcrban
-                    log.Print("---- The crbanwire value  was assigned es "+Config_WS_crbanwire_pass)
-				}
-				log.Print("UnmarshalJSON 2.06!")
 			}
 
 			break

@@ -5,7 +5,8 @@
 			"nodes" : [
 				{
 					"active"   : true,
-                       "passwordcrbanwire" : "pruebasbw"
+                       "passwordcrbanwire" : "pruebasbw",
+                       "urlcrbanwire" : "https://cr.banwire.com"
 				}
 			]
 		},      
@@ -15,11 +16,11 @@
 				{
                    
 					"active"   : true,
-					"host" 	   : "bin_banwire_service_gs_ivr_postgres",
+                    "host" 	   : "stampy.db.elephantsql.com",
 					"port" 	   : 5432,
-					"db" 	   : "banwire",
-					"user" 	   : "banwire",
-					"password" : "banwire"
+					"db" 	   : "lerepagr",
+					"user" 	   : "lerepagr",
+					"password" : "Ag8q2utgSsVy2tyR7_M9cNYbzsqSvwma"
 
 				}
 			]
