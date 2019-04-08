@@ -36,9 +36,10 @@ import (
 		"user": {Config_WS_crbanwire_pass},  //this value needs to be configurable to Move to production. 22 Jan 2019        
 		"reference": {requestData.Paymentreference}, 
 		"token": {requestData.Token},         
-		"amount": {requestData.Amount},          
+		"amount": {strings.Trim(requestData.Amount, ",")},          
         "cvv": {requestData.Cvv},  
 	}
+log.Println("web api el amount"+strings.Trim(requestData.Amount, ","))    
 log.Println("web api el cvv"+requestData.Cvv)
 //	    response,err := http.PostForm("https://cr.banwire.com/?action=card",
 	    response,err := http.PostForm(Config_WS_crbanwire_url+"/?action=card",
