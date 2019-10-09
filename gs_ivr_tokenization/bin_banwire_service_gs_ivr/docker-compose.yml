@@ -16,7 +16,8 @@ services:
         aliases:
           - bin_banwire_service_gs_ivr_postgres
   app:
-    image: postgres:9.6-alpine
+#    image: postgres:9.6-alpine
+    build: .
     restart: always
     volumes:
       - .:/app
