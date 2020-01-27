@@ -55,6 +55,9 @@ import (
 		requestData.Token = v.Get("token")
 		requestData.Cvv = v.Get("cvv")
 		requestData.Amount = v.Get("amount")
+	        if v.Get("msi") != nil {
+			requestData.Msi = v.Get("msi")
+		}	   
 
    //END
    	 
@@ -80,6 +83,7 @@ import (
 		requestData.Card = v.Get("card")
 		requestData.Exp = v.Get("exp")
 		requestData.Cvv = v.Get("cvv")
+
 
    //END
    	  return  requestData, errorGeneral
@@ -200,6 +204,14 @@ import (
 				}else{
 					resultado="Amount is required"
 		        }
+		    
+		   		 if parRequestData.Msi != "" {
+					if len(parRequestData.Msi)==1 ||  len(parRequestData.Msi)==2 {
+	
+					}else{
+						resultado="MSI must be 1 or 2 digits"
+			        	}
+				 }
             //lenght
 
 
