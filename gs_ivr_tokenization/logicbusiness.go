@@ -124,7 +124,7 @@ func v4ProcessProcessPayment(w http.ResponseWriter, requestData modelito.Request
     	log.Print("CZ   STEP Validate Parms")
 
 		/// START
-	        result ="OK realizarpago"+requestData.Clientreference+"    :    " +requestData.Paymentreference+"    :    " +requestData.Token+"    :    " +requestData.Cvv+"    :    " +requestData.Amount+"    :    "
+	        result ="OK realizarpago"+requestData.Clientreference+"    :    " +requestData.Paymentreference+"    :    " +requestData.Token+"    :    " +requestData.Cvv+"    :    " +requestData.Amount+"    :    " +requestData.Msi+"    :    "
 		    log.Print("CZ    handler Listening test realizarpago:"+result)
 		    
 		     log.Print("CZ   STEP Validate paramters request")
