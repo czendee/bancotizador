@@ -1,6 +1,7 @@
 package model
 import (
-	"time"
+	"time"
+
 	)
 
 
@@ -41,6 +42,7 @@ type RequestTokenized struct {
 	Card  string      `json:"card"`
 	Exp  string      `json:"exp"`
 	Cvv  string      `json:"Cvv"`
+	Msi  string      `json:"Msi"`
 }
 
 
