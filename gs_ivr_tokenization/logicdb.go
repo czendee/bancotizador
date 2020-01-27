@@ -356,6 +356,7 @@ var errPayments error
                                     log.Print("About record Payment info in DB, the customer exists, ID interno es "+miCustomer.ID)
                                     miPayment.Token =requestData.Token
                                     miPayment.Amount =requestData.Amount
+				    miPayment.Msi =requestData.Msi
                                     errInsertPay:=miPayment.CreatePayment(db )
                                     log.Print("regresa func  CreatePayment ok!\n")
                                     if errInsertPay != nil {
