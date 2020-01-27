@@ -38,9 +38,11 @@ import (
 		"token": {requestData.Token},         
 		"amount": {strings.Replace(requestData.Amount, ",", "", -1)  },          
         "cvv": {requestData.Cvv},  
+		    "msi": {requestData.Msi},  
 	}
 log.Println("web api el amount 6:"+strings.Replace(requestData.Amount, ",", "", -1)  )    
 log.Println("web api el cvv"+requestData.Cvv)
+	   log.Println("web api el msi"+requestData.Msi)
 //	    response,err := http.PostForm("https://cr.banwire.com/?action=card",
 	    response,err := http.PostForm(Config_WS_crbanwire_url+"/?action=card",
 
