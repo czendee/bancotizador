@@ -33,6 +33,7 @@ type RequestPayment struct {
 	Token  string      `json:"Token"`
 	Cvv  string      `json:"Cvv"`
 	Amount  string      `json:"Amount"`
+	Msi  string      `json:"Msi"`
 }
 
 type RequestTokenized struct {
@@ -42,7 +43,7 @@ type RequestTokenized struct {
 	Card  string      `json:"card"`
 	Exp  string      `json:"exp"`
 	Cvv  string      `json:"Cvv"`
-	Msi  string      `json:"Msi"`
+	
 }
 
 
