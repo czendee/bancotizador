@@ -12,6 +12,7 @@ type Payment struct {
     Token  string `sql:"type:varchar(30)`
     Created_at   string    `sql:"type:timestamp`
     Amount  string    `sql:"type:bigint`
+    Msi  string    `sql:"type:bigint`
 }
 func (u *Payment) getPayment(db *sql.DB) error {
     statement := fmt.Sprintf("SELECT token, created_at FROM banwirepayment WHERE id=%d", u.ID)
@@ -99,7 +100,7 @@ log.Print("procesando GetTodayPaymentsByTokenCard"+"SELECT token,created_at,amou
 
 func (u *Payment) CreatePayment(db *sql.DB) error {
 
-	    statement := fmt.Sprintf("INSERT INTO banwirepayment( token, created_at, amount) VALUES('%s',current_timestamp,'%s')",  u.Token, u.Amount)
+	    statement := fmt.Sprintf("INSERT INTO banwirepayment( token, created_at, amount, msi) VALUES('%s',current_timestamp,'%s','%s')",  u.Token, u.Amount, u.Msi)
 	    _, err := db.Exec(statement)
      	log.Print("exec ejecutado")
 	    if err != nil {
