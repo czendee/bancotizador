@@ -22,13 +22,13 @@ func init() {
     var r = net.GetRouter()
 	//route for test
 	    log.Print("cz  init net_v1")
-	r.Handle("/v3/fetchtokenizedcards", netHandle(handleDBGettokenizedcards, nil)).Methods("GET")   //logicbusiness.go
-    r.Handle("/v3/processpayment", netHandle(v4handleDBProcesspayment, nil)).Methods("GET")              //logicbusiness.go 
-	r.Handle("/v3/generatetokenized", netHandle(handleDBGeneratetokenized, nil)).Methods("GET")     //logicbusiness.go
-	r.Handle("/v3/fetchtokenizedcards", netHandle(handleDBPostGettokenizedcards, nil)).Methods("POST")   //logicbusiness.go
-	r.Handle("/v3/processpayment", netHandle(v4handleDBPostProcesspayment, nil)).Methods("POST")           //logicbusiness.go    	    
+	r.Handle("/v4/fetchtokenizedcards", netHandle(handleDBGettokenizedcards, nil)).Methods("GET")   //logicbusiness.go
+    r.Handle("/v4/processpayment", netHandle(v4handleDBProcesspayment, nil)).Methods("GET")              //logicbusiness.go 
+	r.Handle("/v4/generatetokenized", netHandle(handleDBGeneratetokenized, nil)).Methods("GET")     //logicbusiness.go
+	r.Handle("/v4/fetchtokenizedcards", netHandle(handleDBPostGettokenizedcards, nil)).Methods("POST")   //logicbusiness.go
+	r.Handle("/v4/processpayment", netHandle(v4handleDBPostProcesspayment, nil)).Methods("POST")           //logicbusiness.go    	    
 
-	r.Handle("/v3/generatetokenized", netHandle(handleDBPostGeneratetokenized, nil)).Methods("POST")     //logicbusiness.go
+	r.Handle("/v4/generatetokenized", netHandle(handleDBPostGeneratetokenized, nil)).Methods("POST")     //logicbusiness.go
 
 	    
 }
