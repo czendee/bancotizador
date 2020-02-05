@@ -21,7 +21,7 @@ services:
     working_dir: /app
     command: ["./gs_ivr-${ENV:-prod}"]
     ports:
-      - "${PORT:-3000}:3000"
+      - "${PORT:-3007}:3007"
     environment:
       - POSTGRES_USER=banwire
       - POSTGRES_DB=banwire
