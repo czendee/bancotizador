@@ -1,0 +1,29 @@
+{
+	"othersources" : [
+		{
+			"type" : "crbanwire",
+			"nodes" : [
+				{
+					"active"   : true,
+                       "passwordcrbanwire" : "pruebasbw",
+                       "urlcrbanwire" : "https://cr.banwire.com"
+				}
+			]
+		},      
+		{
+			"type" : "postgresql",
+			"nodes" : [
+				{
+                   
+					"active"   : true,
+					"host" 	   : "bin_banwire_service_gs_ivr_db-postgres_1",
+					"port" 	   : 5432,
+					"db" 	   : "banwire",
+					"user" 	   : "banwire",
+					"password" : "banwire"
+
+				}
+			]
+		}
+	]
+}

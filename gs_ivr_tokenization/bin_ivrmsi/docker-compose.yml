@@ -1,0 +1,31 @@
+version: '3.3'
+
+services:
+  db-postgres:
+    image: postgres:9.6-alpine
+    restart: always
+    volumes:
+      - ./scripts:/docker-entrypoint-initdb.d
+      - db-vol:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=banwire
+      - POSTGRES_DB=banwire
+      - POSTGRES_PASSWORD=banwire
+
+  app:
+#    image: postgres:9.6-alpine
+    build: .
+    restart: always
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: ["./gs_ivr-${ENV:-prod}"]
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - POSTGRES_USER=banwire
+      - POSTGRES_DB=banwire
+      - POSTGRES_PASSWORD=banwire
+
+volumes:
+  db-vol:
