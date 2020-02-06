@@ -170,9 +170,10 @@ var errCards error
 											         miCard.Bin =mibin //6 basic digits in a card
 											         miCard.Valid =requestData.Exp  //4 digits passed as params
 											         miCard.Score ="0"
-											         miCard.Customer =miCustomer.ID	
+											         miCard.Customer =miCustomer.ID												         
 											         miCard.Brand = miu.GetCardType(requestData.Card)
 											         miCard.Type = dataObtained.Type
+												 miCard.Phone =requestData.Phone  //10 digits passed as params
 											         errUpdate:=miCard.CreateCard(db)
 											          log.Print("regresa func  updateCard ok!\n")
 													if errUpdate != nil {
@@ -194,6 +195,7 @@ var errCards error
 										log.Print(" ya existe table card  token:!\n"+miCard.Token)
 										log.Print(" ya existe table card  bin:!\n"+miCard.Bin)
 										log.Print(" ya existe table card customer:!\n"+miCard.Customer)
+										log.Print(" ya existe table card phone:!\n"+miCard.Phone)
 /*									         miCard.Token 
 									         miCard.Last 
 									         miCard.Bin 
