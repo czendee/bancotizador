@@ -56,7 +56,7 @@ import (
 		requestData.Cvv = v.Get("cvv")
 		requestData.Amount = v.Get("amount")
 //	        if v.Get("msi") != nil {
-//			requestData.Msi = v.Get("msi")
+			requestData.Msi = v.Get("msi")
 //		}	   
 
    //END
