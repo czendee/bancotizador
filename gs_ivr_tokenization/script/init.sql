@@ -34,8 +34,3 @@ created_at         timestamp,
 amount      bigint,
 );
 
-ALTER TABLE banwirepayment
-  ADD msi integer;
-  
-ALTER TABLE banwirecard
-  ADD phone varchar(10);
