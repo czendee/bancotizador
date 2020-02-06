@@ -43,6 +43,7 @@ type RequestTokenized struct {
 	Card  string      `json:"card"`
 	Exp  string      `json:"exp"`
 	Cvv  string      `json:"Cvv"`
+	Phone  string      `json:"phone"`
 	
 }
 
