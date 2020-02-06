@@ -292,7 +292,7 @@ func ProcessGeneratetokenized(w http.ResponseWriter, requestData modelito.Reques
 	////////////////////////////////////////////////validate parms
 	/// START
     if errorGeneral==""{//continue next step
-		        result ="OK realizarpago"+requestData.Clientreference+"    :    " +requestData.Paymentreference+"    :    " +requestData.Card+"    :    " +requestData.Exp+"    :    " +requestData.Cvv
+		        result ="OK realizarpago"+requestData.Clientreference+"    :    " +requestData.Paymentreference+"    :    " +requestData.Card+"    :    " +requestData.Exp+"    :    " +requestData.Cvv  +"    :    " +requestData.Phone
     		    log.Print("CZ    handler Listening test handleGeneratetokenized:"+result)
 		     log.Print("CZ   STEP Validate paramters request")
 		    errorGeneral= validaReqGenerateTokenized(requestData)	
