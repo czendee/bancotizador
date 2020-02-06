@@ -17,6 +17,7 @@ type Card struct {
     Customer   string    `sql:"type:bigint`
     Brand   string    `sql:"type:varchar(30)`
     Type   string    `sql:"type:varchar(30)`
+    Phone   string    `sql:"type:varchar(10)`
 }
 /////////////////////////////version 3.2 :)
 func (u *Card) getCard(db *sql.DB) error {
@@ -81,7 +82,7 @@ func (u *Card) CreateCard(db *sql.DB) error {
      if(errorGeneral==""){
      	log.Print("fecha valid"+dateDDMMYY)
 
-	    statement := fmt.Sprintf("INSERT INTO banwirecard( token, last_digits, bin, valid_thru, score, is_banned, id_customer,brand, created_at, last_update_at, type_card) VALUES('%s','%s','%s',to_timestamp('%s 00:00:01', 'DD/MM/YYYY hh24:mi:ss'), %s,false, %s, '%s',current_timestamp,current_timestamp,'%s')",  u.Token, u.Last, u.Bin,dateDDMMYY, u.Score,u.Customer, u.Brand,u.Type)
+	    statement := fmt.Sprintf("INSERT INTO banwirecard( token, last_digits, bin, valid_thru, score, is_banned, id_customer,brand, created_at, last_update_at, type_card,phone) VALUES('%s','%s','%s',to_timestamp('%s 00:00:01', 'DD/MM/YYYY hh24:mi:ss'), %s,false, %s, '%s',current_timestamp,current_timestamp,'%s','%s')",  u.Token, u.Last, u.Bin,dateDDMMYY, u.Score,u.Customer, u.Brand,u.Type,u.Phone)
 	    _, err := db.Exec(statement)
      	log.Print("exec ejecutado")
 	    if err != nil {
@@ -101,7 +102,7 @@ func (u *Card) CreateCard(db *sql.DB) error {
 func GetCardsByCustomer(db *sql.DB, customer_reference string) ([]Card, error) {
 	log.Print("GetCardsByCustomer 01!\n")
 //	statement := fmt.Sprintf("SELECT id_card, token, bin,last_digits,valid_thru,brand,type_card, score FROM card WHERE id_customer= %s  order by score DESC", id_customer)
-	statement := fmt.Sprintf("SELECT id_card, token, bin,last_digits,valid_thru,brand,type_card, score  FROM banwirecard  c, banwirecustomer  a WHERE c.id_customer= a.id_customer and a.reference= '%s'  order by score DESC;", customer_reference)
+	statement := fmt.Sprintf("SELECT id_card, token, bin,last_digits,valid_thru,brand,type_card, score, phone  FROM banwirecard  c, banwirecustomer  a WHERE c.id_customer= a.id_customer and a.reference= '%s'  order by score DESC;", customer_reference)
  	log.Print("GetCardsByCustomerb 02!\n")
     rows, err := db.Query(statement)
     log.Print("GetCardsByCustomer 02.1!\n")
@@ -114,7 +115,7 @@ func GetCardsByCustomer(db *sql.DB, customer_reference string) ([]Card, error) {
     for rows.Next() {
     	 log.Print("GetCardsByCustomer 03!\n")
         var u Card
-        if err := rows.Scan(&u.ID, &u.Token, &u.Bin,&u.Last,&u.Valid, &u.Brand,&u.Type, &u.Score); err != nil {
+        if err := rows.Scan(&u.ID, &u.Token, &u.Bin,&u.Last,&u.Valid, &u.Brand,&u.Type, &u.Score,&u.Phone); err != nil {
 //        if err := rows.Scan(&u.Token, &u.Bin); err != nil {
         	log.Print("GetCardsByCustomer err!\n"+err.Error())
             return nil, err
