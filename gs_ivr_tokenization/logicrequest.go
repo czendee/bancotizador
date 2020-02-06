@@ -83,6 +83,7 @@ import (
 		requestData.Card = v.Get("card")
 		requestData.Exp = v.Get("exp")
 		requestData.Cvv = v.Get("cvv")
+	        requestData.Phone = v.Get("phone")
 
 
    //END
@@ -265,6 +266,15 @@ import (
 				}else{
 					resultado="Valid Thru is required"
 		        }
+				if parRequestData.Phone != "" {
+					if len(parRequestData.Phone)==10{
+	
+					}else{
+						resultado="Phone Number must be 10 digits"
+			        }
+				}else{
+					resultado="Phone is required"
+		        }		    
 /*				if parRequestData.Cvv != "" {
 					if len(parRequestData.Cvv)==3 ||  len(parRequestData.Cvv)==4 {
 	
