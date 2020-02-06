@@ -103,8 +103,11 @@ log.Println("web api el cvv"+requestData.Cvv)
 			"name": {"generalseguros"}, 
 			"address": {"generalseguros"},
 			"postal_code": {"06000"},
+			 "phone": {requestData.Phone},  //06Feb2020 requestwd by antonio
 			}	
 
+		    log.Println("web api el phone"+requestData.Phone)
+		   
 //		    response,err := http.PostForm("https://cr.banwire.com/?action=card&exists=1",
 		    response,err := http.PostForm(Config_WS_crbanwire_url+"/?action=card&exists=1",
 
