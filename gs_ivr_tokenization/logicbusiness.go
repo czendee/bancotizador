@@ -220,6 +220,15 @@ func v4ProcessProcessPayment(w http.ResponseWriter, requestData modelito.Request
 	var  dataObtainedCard  modelito.Card
 	    if errorGeneral==""{//continue next step
 	    	log.Print("CZ   STEP  update the score field: increase by 1")
+		    	log.Print("CZ   STEP  start: when the MSI was not being sent, was casing an error in the db insert:!\n")
+		    		if requestData.Msi != "" {
+					
+				}else{
+					requestData.Msi ="0"
+					
+				}
+		    		log.Print("CZ   STEP set some value for MSI in the DB:!\n"+requestData.Msi)
+		    	log.Print("CZ   STEP  end: when the MSI was not being sent, was casing an error in the db insert:!\n")
 			requestData, dataObtainedCard, errorGeneral= logicProcesspaymentDBV4(requestData , errorGeneral )  
 
 									log.Print(" medio token:!\n"+dataObtainedCard.Token)
