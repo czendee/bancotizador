@@ -31,10 +31,9 @@ CREATE TABLE banwirepayment(
 id_payment bigserial,
 token    varchar(100),   --constrain unique
 created_at         timestamp,
-amount      bigint,
+amount      varchar,
+msi integer
 );
-ALTER TABLE banwirepayment
-  ADD msi integer;
   
 ALTER TABLE banwirecard
   ADD phone varchar(10);
