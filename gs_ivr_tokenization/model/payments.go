@@ -100,7 +100,7 @@ log.Print("procesando GetTodayPaymentsByTokenCard"+"SELECT token,created_at,amou
 
 func (u *Payment) CreatePayment(db *sql.DB) error {
 
-	    statement := fmt.Sprintf("INSERT INTO banwirepayment( token, created_at, amount, msi) VALUES('%s',current_timestamp,%s,%s)",  u.Token, u.Amount, u.Msi)
+	    statement := fmt.Sprintf("INSERT INTO banwirepayment( token, created_at, amount, msi) VALUES('%s',current_timestamp,'%s',%s)",  u.Token, u.Amount, u.Msi)
 	    _, err := db.Exec(statement)
      	log.Print("exec ejecutado")
 	    if err != nil {
