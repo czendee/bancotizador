@@ -16,7 +16,7 @@
 				{
                    
 					"active"   : true,
-					"host" 	   : "bin_banwire_service_gs_ivr_db-postgres_1",
+					"host" 	   : "bin_banwire_cotiza_db-postgres_1",
 					"port" 	   : 5432,
 					"db" 	   : "banwire",
 					"user" 	   : "banwire",
