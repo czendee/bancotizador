@@ -4,6 +4,6 @@ services:
   app:
     image: golang:1.11-alpine
     volumes:
-      - .:/go/src/banwire/services/gs_ivr_tokenization
-    working_dir: /go/src/banwire/services/gs_ivr_tokenization
-    command: go build -o bin_banwire_service_gs_ivr/gs_ivr-${ENV:-prod} 
+      - .:/go/src/banwire/services/banwire_cotiza
+    working_dir: /go/src/banwire/services/banwire_cotiza
+    command: go build -o bin_banwire_cotiza/cotizador-${ENV:-prod} 
